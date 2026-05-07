@@ -1,0 +1,23 @@
+* C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit B.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Thu May 07 21:44:48 2026
+
+
+
+** Analysis setup **
+.ac DEC 101 10 100Meg
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "Circuit B.net"
+.INC "Circuit B.als"
+
+
+.probe
+
+
+.END

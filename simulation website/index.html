@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Performance Trade-off</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+        
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .glass {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar {
+            width: 350px;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .control-group { margin-bottom: 1.5rem; }
+        .control-group h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            color: #94a3b8;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+
+        .slider-container { margin-bottom: 0.8rem; }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+        .slider-header span.val { color: var(--accent-hover); font-weight: 600; }
+
+        input[type="range"] {
+            width: 100%;
+            appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent-hover); }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Enable scrolling for analysis log */
+        }
+
+        .main-header {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .main-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.2rem;
+        }
+        
+        .main-header p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .status-box {
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 250px;
+            justify-content: center;
+        }
+        .status-label { font-size: 0.9rem; color: #cbd5e1; }
+        .status-var { font-weight: 600; font-size: 1.1rem; color: #fff; display: inline-flex; align-items: center; justify-content: center; min-width: 40px; }
+        .status-dir { font-weight: 600; font-size: 1rem; }
+        .status-dir.up { color: #4ade80; }
+        .status-dir.down { color: #f87171; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+            gap: 1.5rem;
+            flex-shrink: 0;
+            min-height: calc(100vh - 10rem);
+        }
+
+        .analysis-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            flex-shrink: 0;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .analysis-header h2 { font-size: 1.5rem; color: #fff; }
+        .clear-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .clear-btn:hover { background: rgba(255,255,255,0.2); }
+        .analysis-log {
+            background: rgba(0,0,0,0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            color: #cbd5e1;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.6;
+        }
+        .log-entry {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .log-entry:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .log-up { color: #4ade80; }
+        .log-down { color: #f87171; }
+
+        .analysis-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            flex-shrink: 0;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .analysis-header h2 { font-size: 1.5rem; color: #fff; }
+        .clear-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .clear-btn:hover { background: rgba(255,255,255,0.2); }
+        .analysis-log {
+            background: rgba(0,0,0,0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            color: #cbd5e1;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.6;
+        }
+        .log-entry {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            padding-right: 4rem;
+        }
+        .log-entry:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .log-up { color: #4ade80; }
+        .log-down { color: #f87171; }
+        .copy-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .card {
+            padding: 1.5rem 1rem;
+            border-radius: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+        }
+        .card-a::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .card-b::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .card-c::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: #fff;
+            text-align: center;
+            flex-shrink: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Polygon Styles */
+        .polygon-wrapper {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 0;
+            position: relative;
+        }
+
+        .polygon-container {
+            width: 1000px;
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .polygon-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: visible;
+        }
+
+        .edge {
+            stroke: rgba(255, 255, 255, 0.08);
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
+        }
+        .edge.green {
+            stroke: #4ade80;
+            stroke-width: 3.5;
+            filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.6));
+            z-index: 5;
+        }
+        .edge.red {
+            stroke: #f87171;
+            stroke-width: 3.5;
+            filter: drop-shadow(0 0 6px rgba(248, 113, 113, 0.6));
+            z-index: 5;
+        }
+
+        .node-container {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 6px 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            min-width: 80px;
+            z-index: 10;
+        }
+
+        .node-label {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-bottom: 2px;
+        }
+        .node-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        @keyframes flashGreen {
+            0% { color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+            100% { color: #fff; text-shadow: none; }
+        }
+
+        @keyframes flashRed {
+            0% { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
+            100% { color: #fff; text-shadow: none; }
+        }
+
+        .flash-up { animation: flashGreen 0.8s ease-out; }
+        .flash-down { animation: flashRed 0.8s ease-out; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar glass">
+        <h2>Parameters</h2>
+        
+        <div class="control-group" id="dc-params">
+            <h3>DC & Transistor</h3>
+        </div>
+
+        <div class="control-group" id="res-params">
+            <h3>Resistors (Ω)</h3>
+        </div>
+
+        <div class="control-group" id="cap-params">
+            <h3>Capacitors (F)</h3>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="main-header">
+            <div>
+                <h1>Performance Trade-off</h1>
+                <p>Interactive evaluation of Circuit A, B, and C parameters.</p>
+            </div>
+            <div id="status-box" class="glass status-box">
+                <span class="status-label">Last Changed:</span>
+                <span id="status-var" class="status-var">-</span>
+                <span id="status-dir" class="status-dir"></span>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Circuit A -->
+            <div class="card glass card-a">
+                <h2>Circuit A</h2>
+                <div class="polygon-wrapper">
+                    <div class="polygon-container" id="poly-A"></div>
+                </div>
+            </div>
+
+            <!-- Circuit B -->
+            <div class="card glass card-b">
+                <h2>Circuit B</h2>
+                <div class="polygon-wrapper">
+                    <div class="polygon-container" id="poly-B"></div>
+                </div>
+            </div>
+
+            <!-- Circuit C -->
+            <div class="card glass card-c">
+                <h2>Circuit C</h2>
+                <div class="polygon-wrapper">
+                    <div class="polygon-container" id="poly-C"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYSIS SECTION -->
+        <div class="analysis-section glass">
+            <div class="analysis-header">
+                <h2>Analysis Log</h2>
+                <button id="clear-log" class="clear-btn">Clear Log</button>
+            </div>
+            <div id="analysis-log" class="analysis-log">
+                <div class="log-entry" style="color: #94a3b8;">Move a slider and release to generate analysis.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        const config = {
+            'dc-params': [
+                { id: 'vcc', label: 'V_{CC} (V)', min: 1, max: 30, step: 0.1, val: 15 },
+                { id: 'vbe', label: 'V_{BE} (V)', min: 0.5, max: 0.9, step: 0.01, val: 0.7 },
+                { id: 'vt', label: 'V_T (V)', min: 0.02, max: 0.03, step: 0.001, val: 0.026 },
+                { id: 'beta', label: '\\beta', min: 10, max: 500, step: 1, val: 100 }
+            ],
+            'res-params': [
+                { id: 'r1', label: 'R_1', min: 1e3, max: 100e3, step: 100, val: 10e3 },
+                { id: 'r2', label: 'R_2', min: 1e3, max: 100e3, step: 100, val: 2.2e3 },
+                { id: 'rc', label: 'R_C', min: 100, max: 10e3, step: 100, val: 1e3 },
+                { id: 're', label: 'R_E', min: 10, max: 5e3, step: 10, val: 220 },
+                { id: 're1', label: 'R_{E1}', min: 10, max: 1e3, step: 10, val: 100 },
+                { id: 're2', label: 'R_{E2}', min: 10, max: 5e3, step: 10, val: 120 },
+                { id: 'rl', label: 'R_L', min: 100, max: 100e3, step: 100, val: 10e3 }
+            ],
+            'cap-params': [
+                { id: 'cin', label: 'C_{in}', min: 1e-7, max: 1e-4, step: 1e-7, val: 10e-6 },
+                { id: 'cc', label: 'C_C', min: 1e-7, max: 1e-4, step: 1e-7, val: 10e-6 },
+                { id: 'ce', label: 'C_E', min: 1e-7, max: 1e-4, step: 1e-7, val: 10e-6 },
+                { id: 'cpi', label: 'C_\\pi', min: 1e-12, max: 100e-12, step: 1e-12, val: 10e-12 },
+                { id: 'cmu', label: 'C_\\mu', min: 1e-12, max: 100e-12, step: 1e-12, val: 2e-12 }
+            ]
+        };
+
+        const properties = [
+            { key: 'power', label: '$P_{total}$', unit: 'W' },
+            { key: 'vswing', label: '$V_{swing}$', unit: 'V' },
+            { key: 'gain', label: '$A_v$', unit: ' V/V' },
+            { key: 'bw', label: '$BW$', unit: 'Hz' },
+            { key: 'zin', label: '$Z_{in}$', unit: 'Ω' },
+            { key: 'zout', label: '$Z_{out}$', unit: 'Ω' }
+        ];
+
+        const state = {};
+        const prevValues = { A: {}, B: {}, C: {} };
+        let edgeTimeouts = {};
+        
+        let stableState = {};
+        let stableOutputs = { A: {}, B: {}, C: {} };
+
+        function addLogEntry(htmlContent, rawText) {
+            const logBox = document.getElementById('analysis-log');
+            if (logBox.children.length === 1 && logBox.children[0].textContent.includes('Move a slider')) {
+                logBox.innerHTML = '';
+            }
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = htmlContent;
+            entry.appendChild(contentDiv);
+            
+            if (rawText) {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(rawText).then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => copyBtn.textContent = originalText, 1500);
+                    });
+                });
+                entry.appendChild(copyBtn);
+            }
+            
+            logBox.insertBefore(entry, logBox.firstChild);
+        }
+
+        function formatUnit(value, unit) {
+            if (isNaN(value) || !isFinite(value)) return "Error";
+            if (Math.abs(value) >= 1e6) return (value / 1e6).toFixed(2) + ' M' + unit;
+            if (Math.abs(value) >= 1e3) return (value / 1e3).toFixed(2) + ' k' + unit;
+            if (Math.abs(value) >= 1) return value.toFixed(2) + ' ' + unit;
+            if (Math.abs(value) >= 1e-3) return (value * 1e3).toFixed(2) + ' m' + unit;
+            if (Math.abs(value) >= 1e-6) return (value * 1e6).toFixed(2) + ' µ' + unit;
+            if (Math.abs(value) >= 1e-9) return (value * 1e9).toFixed(2) + ' n' + unit;
+            if (Math.abs(value) >= 1e-12) return (value * 1e12).toFixed(2) + ' p' + unit;
+            return value.toExponential(2) + ' ' + unit;
+        }
+
+        function initPolygons() {
+            ['A', 'B', 'C'].forEach(circuit => {
+                const container = document.getElementById(`poly-${circuit}`);
+                
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('class', 'polygon-svg');
+                svg.setAttribute('viewBox', '0 0 300 300');
+                // preserveAspectRatio to center the polygon nicely
+                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                
+                const R = 110;
+                const cx = 150, cy = 150;
+                const coords = [];
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * 60) * Math.PI / 180;
+                    coords.push({
+                        x: cx + R * Math.sin(angle),
+                        y: cy - R * Math.cos(angle)
+                    });
+                }
+
+                // Draw edges
+                for (let i = 0; i < 6; i++) {
+                    for (let j = i + 1; j < 6; j++) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', coords[i].x);
+                        line.setAttribute('y1', coords[i].y);
+                        line.setAttribute('x2', coords[j].x);
+                        line.setAttribute('y2', coords[j].y);
+                        line.setAttribute('class', 'edge');
+                        line.setAttribute('id', `edge-${circuit}-${i}-${j}`);
+                        svg.appendChild(line);
+                    }
+                }
+                container.appendChild(svg);
+
+                // Draw Nodes
+                for (let i = 0; i < 6; i++) {
+                    const prop = properties[i];
+                    const div = document.createElement('div');
+                    div.className = 'node-container';
+                    div.style.left = `${(coords[i].x / 300) * 100}%`;
+                    div.style.top = `${(coords[i].y / 300) * 100}%`;
+                    
+                    div.innerHTML = `
+                        <div class="node-label">${prop.label}</div>
+                        <div class="node-value" id="out-${circuit}-${prop.key}">-</div>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+        }
+
+        function init() {
+            for (const [groupId, params] of Object.entries(config)) {
+                const groupEl = document.getElementById(groupId);
+                params.forEach(p => {
+                    state[p.id] = p.val;
+
+                    const container = document.createElement('div');
+                    container.className = 'slider-container';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'slider-header';
+                    header.innerHTML = `<span id="label-${p.id}">\\(${p.label}\\)</span><span class="val" id="val-${p.id}">${formatUnit(p.val, '')}</span>`;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'range';
+                    input.min = p.min;
+                    input.max = p.max;
+                    input.step = p.step;
+                    input.value = p.val;
+
+                    input.addEventListener('input', (e) => {
+                        const newVal = parseFloat(e.target.value);
+                        const oldVal = state[p.id];
+                        
+                        if (newVal !== oldVal) {
+                            const statusVar = document.getElementById('status-var');
+                            const statusDir = document.getElementById('status-dir');
+                            
+                            // Extract rendered label from the sidebar
+                            const renderedLabelNode = document.getElementById(`label-${p.id}`);
+                            if(renderedLabelNode) {
+                                statusVar.innerHTML = renderedLabelNode.innerHTML;
+                            }
+                            
+                            if (newVal > oldVal) {
+                                statusDir.textContent = 'Increased ▲';
+                                statusDir.className = 'status-dir up';
+                            } else {
+                                statusDir.textContent = 'Decreased ▼';
+                                statusDir.className = 'status-dir down';
+                            }
+                        }
+
+                        state[p.id] = newVal;
+                        document.getElementById(`val-${p.id}`).textContent = formatUnit(state[p.id], '');
+                        calculate();
+                    });
+
+                    input.addEventListener('change', (e) => {
+                        const finalInputVal = state[p.id];
+                        const initialInputVal = stableState[p.id];
+                        
+                        if (finalInputVal !== initialInputVal) {
+                            const inputDir = finalInputVal > initialInputVal ? 'increases' : 'decreases';
+                            const inputClass = finalInputVal > initialInputVal ? 'log-up' : 'log-down';
+                            
+                            const renderedLabelNode = document.getElementById(`label-${p.id}`);
+                            const varName = renderedLabelNode ? renderedLabelNode.innerHTML : `\\(${p.label}\\)`;
+                            
+                            let rawText = `When $${p.label}$ ${inputDir}:\n`;
+                            let logHTML = `<strong>When ${varName} <span class="${inputClass}">${inputDir}</span>:</strong><br/>`;
+                            
+                            const allProps = properties.concat([
+                                {key: 'ic', label: '$I_C$'},
+                                {key: 'ie', label: '$I_E$'},
+                                {key: 'ib', label: '$I_B$'}
+                            ]);
+                            
+                            ['A', 'B', 'C'].forEach(circuit => {
+                                let changes = [];
+                                let rawChanges = [];
+                                allProps.forEach(prop => {
+                                    const oldV = stableOutputs[circuit][prop.key];
+                                    const newV = prevValues[circuit][prop.key];
+                                    
+                                    if (Math.abs(newV - oldV) > 1e-10) {
+                                        const dir = newV > oldV ? 'increases' : 'decreases';
+                                        const dClass = newV > oldV ? 'log-up' : 'log-down';
+                                        changes.push(`\\(${prop.label}\\) <span class="${dClass}">${dir}</span>`);
+                                        rawChanges.push(`${prop.label} ${dir}`);
+                                    }
+                                });
+                                if (changes.length > 0) {
+                                    logHTML += `<span style="margin-left: 15px;">Circuit ${circuit}: ${changes.join(', ')}</span><br/>`;
+                                    rawText += `Circuit ${circuit}: ${rawChanges.join(', ')}\n`;
+                                } else {
+                                    logHTML += `<span style="margin-left: 15px;">Circuit ${circuit}: No change</span><br/>`;
+                                    rawText += `Circuit ${circuit}: No change\n`;
+                                }
+                            });
+                            
+                            addLogEntry(logHTML, rawText);
+                            
+                            if (window.MathJax && window.MathJax.typesetPromise) {
+                                window.MathJax.typesetPromise([document.getElementById('analysis-log')]);
+                            }
+                            
+                            stableState[p.id] = finalInputVal;
+                            stableOutputs = JSON.parse(JSON.stringify(prevValues));
+                        }
+                    });
+
+                    container.appendChild(header);
+                    container.appendChild(input);
+                    groupEl.appendChild(container);
+                });
+            }
+
+            initPolygons();
+            
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+            
+            calculate();
+            
+            stableState = JSON.parse(JSON.stringify(state));
+            stableOutputs = JSON.parse(JSON.stringify(prevValues));
+            
+            const clearBtn = document.getElementById('clear-log');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    document.getElementById('analysis-log').innerHTML = '<div class="log-entry" style="color: #94a3b8;">Move a slider and release to generate analysis.</div>';
+                });
+            }
+        }
+
+        function par(...resistors) {
+            let invSum = 0;
+            for (let r of resistors) {
+                if (r === 0) return 0;
+                invSum += 1 / r;
+            }
+            return 1 / invSum;
+        }
+
+        function updateMetrics(circuit, values) {
+            const oldVals = prevValues[circuit];
+            const deltas = [];
+
+            properties.forEach((prop, i) => {
+                const newVal = values[prop.key];
+                const oldVal = oldVals[prop.key];
+                let delta = 0;
+                
+                if (oldVal !== undefined && oldVal !== newVal) {
+                    delta = newVal > oldVal ? 1 : -1;
+                }
+                deltas[i] = delta;
+                oldVals[prop.key] = newVal;
+                
+                const el = document.getElementById(`out-${circuit}-${prop.key}`);
+                if (el) {
+                    if (delta !== 0) {
+                        el.classList.remove('flash-up', 'flash-down');
+                        void el.offsetWidth;
+                        el.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+                    }
+                    el.textContent = formatUnit(newVal, prop.unit);
+                }
+            });
+            for (let k in values) {
+                oldVals[k] = values[k];
+            }
+
+            for (let i = 0; i < 6; i++) {
+                for (let j = i + 1; j < 6; j++) {
+                    const edge = document.getElementById(`edge-${circuit}-${i}-${j}`);
+                    if (edge) {
+                        edge.classList.remove('green', 'red');
+                        if (deltas[i] !== 0 && deltas[j] !== 0) {
+                            if (deltas[i] === deltas[j]) {
+                                edge.classList.add('green');
+                            } else {
+                                edge.classList.add('red');
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (edgeTimeouts[circuit]) clearTimeout(edgeTimeouts[circuit]);
+            edgeTimeouts[circuit] = setTimeout(() => {
+                for (let i = 0; i < 6; i++) {
+                    for (let j = i + 1; j < 6; j++) {
+                        const edge = document.getElementById(`edge-${circuit}-${i}-${j}`);
+                        if (edge) edge.classList.remove('green', 'red');
+                    }
+                }
+            }, 800);
+        }
+
+        function calculate() {
+            const {
+                vcc, vbe, vt, beta,
+                r1, r2, rc, re, re1, re2, rl,
+                cin, cc, ce, cpi, cmu
+            } = state;
+
+            const alpha = beta / (beta + 1);
+
+            // ---- CIRCUIT A ----
+            let IbA = (vcc * r2 / (r1 + r2) - vbe) / (par(r1, r2) + (1 + beta) * re);
+            let IcA = IbA * beta;
+            let IeA = IbA * (beta + 1);
+            let reA = vt / IeA;
+
+            let pA = vcc * (vcc / (r1 + r2) + IcA);
+            let vswingA = 2 * (vcc * Math.min(1, par(r2, re) / (par(r2, re) + par(r1, rc))) - (vcc - IbA * (beta * rc + (beta + 1) * re)));
+            let zinA = vt * (par(r1, r2) + (1 + beta) * re) / (vcc * r2 / (r1 + r2) - vbe);
+            let zoutA = par(rc, rl);
+            let avA = - (alpha * par(rc, rl) / vt) * IeA;
+
+            let fH1A = 1 / (2 * Math.PI * par(r1, r2, (1 + beta) * reA) * (cpi + cmu * (1 + alpha * par(rc, rl) / reA)));
+            let fH2A = 1 / (2 * Math.PI * par(rc, rl) * cmu * (1 + reA / (alpha * par(rc, rl))));
+            let fL1A = 1 / (2 * Math.PI * cin * (1 + beta) * reA);
+            let fL2A = 1 / (2 * Math.PI * cc * (rc + rl));
+            let fL3A = IeA / (2 * Math.PI * vt * ce);
+            let bwA = Math.min(fH1A, fH2A) - Math.max(fL1A, fL2A, fL3A);
+
+            updateMetrics('A', { power: pA, vswing: vswingA, gain: avA, bw: bwA, zin: zinA, zout: zoutA, ib: IbA, ic: IcA, ie: IeA });
+
+            // ---- CIRCUIT B ----
+            let IbB = (vcc * r2 / (r1 + r2) - vbe) / (par(r1, r2) + (1 + beta) * (re1 + re2));
+            let IcB = IbB * beta;
+            let IeB = IbB * (beta + 1);
+            let reB = vt / IeB;
+
+            let pB = vcc * (vcc / (r1 + r2) + IcB);
+            let vswingB = 2 * (vcc * Math.min(1, par(r2, re1 + re2) / (par(r2, re1 + re2) + par(r1, rc))) - (vcc - IbB * (beta * rc + (beta + 1) * (re1 + re2))));
+            let zinB = (1 + beta) * (reB + re1);
+            let zoutB = par(rc, rl);
+            let avB = - (alpha / (reB + re1)) * par(rc, rl);
+
+            let fH1B = 1 / (2 * Math.PI * par(r1, r2, (1 + beta) * (reB + re1)) * (cpi + cmu * (1 + alpha * par(rc, rl) / (reB + re1))));
+            let fH2B = 1 / (2 * Math.PI * par(rc, rl) * cmu * (1 + (reB + re1) / (alpha * par(rc, rl))));
+            let fL1B = 1 / (2 * Math.PI * cin * (1 + beta) * (reB + re1));
+            let fL2B = 1 / (2 * Math.PI * cc * (rc + rl));
+            let fL3B = 1 / (2 * Math.PI * ce * par(re2, re1 + reB + par(r1, r2) / (1 + beta)));
+            let bwB = Math.min(fH1B, fH2B) - Math.max(fL1B, fL2B, fL3B);
+
+            updateMetrics('B', { power: pB, vswing: vswingB, gain: avB, bw: bwB, zin: zinB, zout: zoutB, ib: IbB, ic: IcB, ie: IeB });
+
+            // ---- CIRCUIT C ----
+            let IbC = (vcc * r2 / (r1 + r2) - vbe) / (par(r1, r2) + (beta + 1) * re);
+            let IcC = IbC * beta;
+            let IeC = IbC * (beta + 1);
+            let reC = vt / IeC;
+
+            let pC = vcc * (vcc / (r1 + r2) + IbC * 2 * beta);
+            let vswingC = 2 * (Math.min(IeC * re, vcc - vbe) - vcc - vbe - IeC * re);
+            let zinC = vt * (par(r1, r2) + (1 + beta) * re) / (vcc * r2 / (r1 + r2) - vbe);
+            let zoutC = rl;
+            let avC = - (alpha * rl / vt) * IeC;
+
+            let fH1C = 1 / (2 * Math.PI * zinC * (cpi + cmu * (1 - avC)));
+            let fH2C = 1 / (2 * Math.PI * rl * (cmu * (1 - 1 / avC) + cmu));
+            let fL1C = 1 / (2 * Math.PI * cin * zinC);
+            let fL2C = 1 / (2 * Math.PI * cc * rl);
+            let fL3C = 1 / (2 * Math.PI * ce * par(re, reC));
+            let bwC = Math.min(fH1C, fH2C) - Math.max(fL1C, fL2C, fL3C);
+
+            updateMetrics('C', { power: pC, vswing: vswingC, gain: avC, bw: bwC, zin: zinC, zout: zoutC, ib: IbC, ic: IcC, ie: IeC });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
