@@ -645,6 +645,11 @@ INPUT .\matlab plotting result\Circuit C - AC Sweep.png
 INPUT .\matlab plotting result\Circuit C - AC Sweep.png
 INPUT .\matlab plotting result\Circuit C - AC Sweep.png
 INPUT .\matlab plotting result\Circuit C - AC Sweep.png
+INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmri10.tfm
+INPUT C:\Program Files\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT C:\Program Files\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT C:\Program Files\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT C:\Program Files\MiKTeX\fonts\tfm\public\lm\ec-lmtt10.tfm
 INPUT report.aux
 INPUT .\report.out
 INPUT .\report.out
@@ -672,6 +677,8 @@ INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmr7.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmr7.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmr8.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmr8.pfb
+INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmri10.pfb
+INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmri10.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmss8.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmss8.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmssbx10.pfb
@@ -682,3 +689,5 @@ INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy6.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy6.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy8.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy8.pfb
+INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmtt10.pfb
+INPUT C:\Program Files\MiKTeX\fonts\type1\public\lm\lmtt10.pfb
