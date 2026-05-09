@@ -10,8 +10,14 @@
 \usepackage{amsmath}
 \allowdisplaybreaks
 
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{graphicx}
+
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\usepackage{pgfplots}   % For plotting graphs (semilogxaxis, axis, etc.)
+\pgfplotsset{compat=1.18}
 
 \usepackage{xcolor}         % Colors
 \definecolor{umblue}{RGB}{0, 51, 102}    % Deep University Blue style
@@ -144,299 +150,437 @@
 
 \section*{PART 1: Introduction}
 \addcontentsline{toc}{section}{PART 1: Introduction}
-\subsection*{1.1 The Bipolar Junction Transistor as an Amplifier}
-\addcontentsline{toc}{subsection}{1.1 The Bipolar Junction Transistor as an Amplifier}
+\subsection*{1.1 Appreciation of BJT as an Amplifier}
+\addcontentsline{toc}{subsection}{1.1 Appreciation of BJT as an Amplifier}
 
-A \textbf{Bipolar Junction Transistor (BJT)} is a three-terminal semiconductor device consisting of two p-n junctions sandwiched together.
-For an NPN transistor (used in this report), it has three terminals: the \textbf{Base (B)}, \textbf{Collector (C)}, and \textbf{Emitter (E)}.
-The fundamental property that makes a BJT useful as an amplifier is its \emph{current-controlled current source} behaviour:
+A \textbf{Bipolar Junction Transistor (BJT)} is a three-terminal semiconductor device consisting of two p-n junctions. For an NPN transistor, it has three terminals: The Base(B), Collector (C), and Emitter (E). Because of the three terminals, it has the following currents and voltage drops:
+\begin{itemize}
+    \item Collector voltage $v_{c}$
+    \item Emitter voltage $v_{e}$
+    \item Base voltage $v_{b}$
+    \item Collector current $i_{c}$
+    \item Emitter current $i_{e}$
+    \item Base current $i_{b}$
+\end{itemize}
+
+\begin{circuitikz}[american voltages, american currents]
+    % Draw the NPN transistor
+    \draw (0,0) node[npn] (Q) {};
+    
+    % Base terminal, voltage label, and current
+    \draw (-2,0) node[anchor=east] {$v_b$} to[short, o-, i=$i_b$] (Q.B);
+    
+    % Collector terminal, voltage label, and current
+    \draw (Q.C) ++(0,1.5) node[anchor=south] {$v_c$} to[short, o-, i=$i_c$] (Q.C);
+    
+    % Emitter terminal, current, and voltage label
+    \draw (Q.E) to[short, i=$i_e$, -o] ++(0,-1.5) node[anchor=north] {$v_e$};
+    
+\end{circuitikz}
+
+The fundamental property that makes a BJT useful as an amplifier is how the output current gets multiplied from the input current by a constant $\beta$:
 
 \begin{equation}
     I_C = \beta \, I_B, \qquad I_E = I_C + I_B = (1+\beta)\,I_B
 \end{equation}
 
-where $\beta$ (also written $h_{FE}$) is the \textbf{current gain} of the transistor, typically in the range 50--500 for a small-signal NPN.
-This means a very small base current $I_B$ (of the order of microamperes, $\mu\text{A}$) controls a much larger collector current $I_C$ (of the order of milliamperes, mA).
+Say an AC current is fed into the base. The transistor will multiply this current by $\beta$ at the collector. This large collector current then flows through a resistor $R_C$, which creates the voltage drop $v_{out}$ = $i_c R_C$. As the input voltage varies, the output voltage varies too, resulting in voltage amplification.
 
-\begin{infobox}[Why does a BJT amplify voltage?]
-A signal source drives a small AC current into the base.
-The transistor multiplies this current by $\beta$ at the collector.
-This large collector current then flows through a resistor $R_C$, creating a large voltage drop $v_{out} = -i_c R_C$.
-A small change in input voltage $v_{in}$ produces a much larger change in output voltage $v_{out}$ --- that is amplification.
-The negative sign means the output is inverted (180° phase shift), which is the defining characteristic of the \textbf{common-emitter} configuration.
-\end{infobox}
+For a BJT to function normally as an amplifier, it must operate in the active region ($V_{CE} \ge V_{CE(sat)}$. A voltage divider bias network is often used to maintain the BJT inside the active region by modifying the values of $R_1$ and $R_2$.
 
-For DC biasing, the transistor must be kept in the \textbf{active region}, where $V_{BE} \approx 0.65$--$0.7\,\text{V}$ (forward-biased base-emitter junction) and $V_{CE} > V_{CE(sat)} \approx 0.2\,\text{V}$ (reverse-biased base-collector junction).
-A \textbf{voltage-divider bias network} ($R_1$, $R_2$) is used in all three circuits in this report to set a stable DC base voltage, ensuring the transistor stays in the active region regardless of small variations in $\beta$.
+\subsection*{1.2 The Three Circuits}
+\addcontentsline{toc}{subsection}{1.2 The Three Circuits}
 
-\subsection*{1.2 Description of the Three Circuit Topologies}
-\addcontentsline{toc}{subsection}{1.2 Description of the Three Circuit Topologies}
+The assignment required us to analyze the operation of the following three configuration of BJTs (Circuit A, Circuit B, and Circuit C).
 
-All three circuits studied in this report are \textbf{common-emitter (CE)} amplifiers built around the same NPN transistor $Q_1$.
-They share a common voltage-divider bias network and coupling/bypass capacitors, but differ in how they handle the \emph{collector load} and the \emph{emitter resistor}.
-The three full topologies are shown below.
-
-Before examining each circuit, it is useful to categorise the components by type:
-
-\begin{table}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Classification of components in the CE amplifier circuits.}
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{llp{7cm}}
-        \toprule
-        \textbf{Component Type} & \textbf{Examples} & \textbf{Role in Circuit} \\
-        \midrule
-        \textbf{Active} (require power to operate; control current) &
-            $Q_1$ (NPN), $Q_2$, $Q_3$ (PNP) &
-            Amplify or mirror current; cannot be replaced by passive elements \\
-        \textbf{Passive} (store or dissipate energy) &
-            $R_1$, $R_2$, $R_C$, $R_E$, $R_L$ &
-            Set bias currents, provide signal load, set gain \\
-        \textbf{Passive Reactive} (frequency-dependent) &
-            $C_{in}$, $C_C$, $C_E$ &
-            Block DC while passing AC signals; set lower cutoff frequency \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:component_types}
-\end{table}
-
-\paragraph{Circuit A --- Passive Resistive Loading (shown first below).}
-This is the simplest CE amplifier.
-The \textbf{collector load is a passive resistor} $R_C$.
-At the emitter, a resistor $R_E$ stabilises the DC bias, while $C_E$ (the bypass capacitor) short-circuits $R_E$ at AC frequencies so that $R_E$ does \emph{not} reduce the AC gain.
-All components ($R_1$, $R_2$, $R_C$, $R_E$, $C_{in}$, $C_C$, $C_E$) are passive --- the only active device is $Q_1$.
-The voltage gain is $A_v \approx -\alpha (R_C \| R_L)/r_e$, which can be high, but the gain is sensitive to temperature because $r_e = V_T/I_E$ depends on temperature.
-
-\paragraph{Circuit B --- Emitter Degeneration Loading (shown second below).}
-Here the emitter resistor is split into two parts: $R_{E1}$ (upper, \emph{not} bypassed) and $R_{E2}$ (lower, bypassed by $C_E$).
-At DC, both $R_{E1}$ and $R_{E2}$ contribute to biasing, setting a lower quiescent current than Circuit A.
-At AC (signal frequencies), $C_E$ short-circuits $R_{E2}$ so only $R_{E1}$ remains in the signal path.
-This \textbf{emitter degeneration} by $R_{E1}$ applies negative feedback: it reduces the gain to $A_v \approx -\alpha(R_C \| R_L)/(r_e + R_{E1})$, but in return it makes the gain more stable against temperature and component variation.
-All components are still passive; $Q_1$ is the only active device.
-
-\paragraph{Circuit C --- Active Loading (shown third below).}
-The passive collector resistor $R_C$ is replaced by a \textbf{PNP current mirror} formed by transistors $Q_2$ and $Q_3$.
-$Q_3$ is \emph{diode-connected} (its base and collector are tied together) and sets a reference current via $R_3$.
-$Q_2$ mirrors this current and acts as the collector load of $Q_1$.
-Because a current source has a very high output impedance ($r_{o}$), the effective AC load seen by $Q_1$'s collector is much higher than any practical resistor, driving the voltage gain towards $g_m r_o$ --- the theoretical maximum for a CE stage.
-This circuit uses \textbf{both passive and active components} as the load; the current mirror transistors ($Q_2$, $Q_3$) are active semiconductors that must be powered by $V_{CC}$.
-
-
-\begin{circuitikz}[american, thick]
-    % Transistor
-    \node[npn] (Q1) at (0,0) {};
-    \node at (-0.6, 0.5) {$Q_1$}; % Label
-
-    % Base connections and Input
-    \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
-    \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
-
-    % Voltage divider (R1, R2) and Vcc
-    \draw (B_node |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
-    \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -3.5) node[ground]{};
-
-    % Collector connections and Vcc
-    \draw (Q1.C) to[short, -*] ++(0,0.5) coordinate(C_split);
-    \draw (C_split |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_C$, i_=$I_2$] (C_split);
-
-    % Output path
-    \draw (C_split) to[C, l=$C_c$, -*] ++(2.5,0) coordinate(Out_node);
-    \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
     
-    % Load resistor
-    \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -3.5) node[ground]{};
+    % --- Circuit A ---
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \scalebox{0.8}{%
+            \begin{circuitikz}[american, thick]
+                % Transistor
+                \node[npn] (Q1) at (0,0) {};
+                \node at (-0.6, 0.5) {$Q_1$}; % Label
 
-    % Emitter connections
-    \draw (Q1.E) to[short, -*] ++(0,-0.5) coordinate(E_split);
-    \draw (E_split) to[R, l=$R_E$] (E_split |- 0, -3.5) node[ground]{};
-    \draw (E_split) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -3.5) node[ground]{};
+                % Base connections and Input
+                \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
+                \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
+
+                % Voltage divider (R1, R2) and Vcc
+                \draw (B_node |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
+                \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -3.5) node[ground]{};
+
+                % Collector connections and Vcc
+                \draw (Q1.C) to[short, -*] ++(0,0.5) coordinate(C_split);
+                \draw (C_split |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_C$, i_=$I_2$] (C_split);
+
+                % Output path
+                \draw (C_split) to[C, l=$C_c$, -*] ++(2.5,0) coordinate(Out_node);
+                \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
+                
+                % Load resistor
+                \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -3.5) node[ground]{};
+
+                % Emitter connections
+                \draw (Q1.E) to[short, -*] ++(0,-0.5) coordinate(E_split);
+                \draw (E_split) to[R, l=$R_E$] (E_split |- 0, -3.5) node[ground]{};
+                \draw (E_split) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -3.5) node[ground]{};
+            \end{circuitikz}%
+        }
+        \caption{Circuit A}
+    \end{subfigure}
+    
+    \vspace{0.8cm} % Vertical space between circuits
+    
+    % --- Circuit B ---
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \scalebox{0.8}{%
+            \begin{circuitikz}[american, thick]
+                % Transistor
+                \node[npn] (Q1) at (0,0) {};
+                \node at (-0.6, 0.5) {$Q_1$}; % Label
+
+                % Base connections and Input
+                \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
+                \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
+
+                % Voltage divider (R1, R2) and Vcc
+                \draw (B_node |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
+                \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -4) node[ground]{};
+
+                % Collector connections and Vcc
+                \draw (Q1.C) to[short, -*] ++(0,0.5) coordinate(C_split);
+                \draw (C_split |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_C$, i_=$I_2$] (C_split);
+
+                % Output path
+                \draw (C_split) to[C, l=$C_c$, -*] ++(2.5,0) coordinate(Out_node);
+                \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
+                
+                % Load resistor
+                \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -4) node[ground]{};
+
+                % Emitter connections (Degeneration: RE1, RE2, and CE)
+                \draw (Q1.E) to[R, l=$R_{E1}$, -*] ++(0,-1.5) coordinate(E_mid);
+                \draw (E_mid) to[R, l=$R_{E2}$] (E_mid |- 0, -4) node[ground]{};
+                \draw (E_mid) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -4) node[ground]{};
+            \end{circuitikz}%
+        }
+        \caption{Circuit B}
+    \end{subfigure}
+    
+    \vspace{0.8cm} % Vertical space between circuits
+
+    % --- Circuit C ---
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \scalebox{0.8}{%
+            \begin{circuitikz}[american, thick]
+                % Main Amplifying Transistor
+                \node[npn] (Q1) at (0,0) {};
+                \node at (-0.6, 0.5) {$Q_1$}; 
+
+                % Base connections and Input
+                \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
+                \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
+
+                % Voltage divider (R1, R2) and Vcc
+                \draw (B_node |- 0, 5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
+                \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -4) node[ground]{};
+
+                % Active Load (Current Mirror: Q2 and Q3)
+                % Q2 is flipped horizontally (xscale=-1) so its base points right
+                \node[pnp, xscale=-1] (Q2) at (0,3) {};
+                \node at (-0.6, 3) {$Q_2$}; 
+                \node[pnp] (Q3) at (8,3) {};
+                \node at (8.6, 3) {$Q_3$};
+
+                % Connect Q1 Collector to Q2 Collector
+                \draw (Q1.C) -- (Q2.C) coordinate[midway] (C_out);
+                
+                % Current Mirror Connections
+                \draw (Q2.B) -- (Q3.B) coordinate[pos=1] (midB);
+                \draw (midB) node[circ]{} |- (Q3.C) node[circ]{}; 
+                
+                % Vcc connections for Active Load
+                \draw (Q2.E |- 0, 5) node[vcc]{$V_{cc}$} to[short, i=$I_2$] (Q2.E);
+                \draw (Q3.E |- 0, 5) node[vcc]{$V_{cc}$} to[short, i=$I_3$] (Q3.E);
+
+                % R3 for the current mirror reference
+                \draw (Q3.C) to[R, l=$R_3$] (Q3.C |- 0, -4) node[ground]{};
+
+                % Output path
+                \draw (C_out) to[C, l=$C_c$, *-*] ++(4,0) coordinate(Out_node);
+                \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
+                
+                % Load resistor (now safely to the right of the current mirror)
+                \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -4) node[ground]{};
+
+                % Emitter connections (RE and CE)
+                \draw (Q1.E) to[short, -*] ++(0,-0.5) coordinate(E_split);
+                \draw (E_split) to[R, l=$R_E$] (E_split |- 0, -4) node[ground]{};
+                \draw (E_split) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -4) node[ground]{};
+            \end{circuitikz}%
+        }
+        \caption{Circuit C}
+    \end{subfigure}
+    
+\end{figure}
+
+\newpage
+In order to analyze the Circuits, we will first apply a standard DC analysis and standard AC analysis by using T-model for all of the three circuits. 
+
+But additionally, we will also need to calculate the power dissipation, bandwidth, and voltage swing of the circuit in order to create the performance metric as shown in Figure 1 in the assignment instructions. These three attributes are not being taught in the lecture, hence further research has been done in order to obtain the general equation to calculate the three attributes to all three of the circuits. The research results is summarised below:
+
+
+\subsection*{1.3 Power Dissipation Formula}
+\addcontentsline{toc}{subsection}{1.3 Power Dissipation Formula}
+For power dissipation, we will use the total power formula for the circuit (as hinted in the assignment instructions, in which we are given the formula that $I_{total}$ = $\sum_{n=1,2,3 \cdots} I_n$). 
+
+We know that power equals to voltage times current, and since the current hinted to be used is $I_{total}$, the voltage must be $V_{total}$ (In this case, it is $V_{CC}$). 
+
+\begin{align*}
+    \boxed{P_{total} = V_{cc} I_{total}}
+\end{align*}
+
+A key observation to point out here is that $I_C$ is most influential in $I_{total}$ for all the three circuits. Hence, $I_C$ can be said to directly alter the power dissipation. This observation is the key in determining circuit sustainability during the analysis later in this report.
+
+\subsection*{1.4 Voltage Swing Formula}
+\addcontentsline{toc}{subsection}{1.4 Voltage Swing Formula}
+From research, voltage swing is just the peak-to-peak output voltage. But in order to calculate it theoretically, we will need to know what conditions of the circuit will result in the output voltage going to the extreme peak. From research, we found that a transistor can swing betwen two extremes:
+\begin{itemize}
+    \item Cutoff: Where $I_C$ approaches 0, and $I_B$ approaches 0. Basically, the transistor is assumed to be "open circuit".
+    
+\begin{circuitikz}[american voltages, american currents, thick]
+    
+    % Internal nodes representing the transistor junction points
+    \coordinate (B_int) at (0,0);
+    \coordinate (C_int) at (2, 1.5);
+    \coordinate (E_int) at (2, -1.5);
+
+    % Base Terminal
+    \draw (-2.5,0) node[anchor=east] {$v_b$} to[short, o-o, i={$i_b$=$0$}] (B_int) node[anchor=south] {B};
+    
+    % Collector Terminal
+    \draw (C_int |- 0, 3.5) node[anchor=south] {$v_c$} to[short, o-o, i={$i_c$=$0$}] (C_int) node[anchor=west] {C};
+    
+    % Emitter Terminal
+    \draw (E_int) node[anchor=west] {E} to[short, o-o, i={$i_e$=$0$}] (E_int |- 0, -3.5) node[anchor=north] {$v_e$};
+
+    % Dashed lines to indicate the open junctions visually
+    \draw[dashed, gray] (B_int) -- (E_int);
+    \draw[dashed, gray] (C_int) -- (E_int);
+    
+    % Labels for the open circuits
+    \node[gray, anchor=north east] at (1, -0.75) {Open (Off)};
+    \node[gray, anchor=west] at (2, 0) {Open (Off)};
+
+\end{circuitikz}
+    \item Saturation: where the transistor is assumed to be just a single point
+
+\begin{circuitikz}[american voltages, american currents, thick]
+    
+    % The single point representing the shorted junctions in ideal saturation
+    \coordinate (Short) at (1, 0);
+    
+    % Draw a prominent dot at the center to emphasize the single point
+    \node[circ, scale=1.5] at (Short) {};
+    
+    % Base Terminal connecting to the center point
+    \draw (-2.5,0) node[anchor=east] {$v_b$} to[short, o-, i=$i_b$] (Short);
+    
+    % Collector Terminal connecting to the center point
+    \draw (1, 3.5) node[anchor=south] {$v_c$} to[short, o-, i=$i_c$] (Short);
+    
+    % Emitter Terminal connecting out from the center point
+    \draw (Short) to[short, i=$i_e$, -o] (1, -3.5) node[anchor=north] {$v_e$};
+
+    % Label explaining the single point
+    \node[gray, anchor=west] at (1.5, 0.25) {Ideal Saturation};
+    \node[gray, anchor=west] at (1.5, -0.25) {($v_b = v_c = v_e$)};
+
 \end{circuitikz}
 
-\begin{circuitikz}[american, thick]
-    % Transistor
-    \node[npn] (Q1) at (0,0) {};
-    \node at (-0.6, 0.5) {$Q_1$}; % Label
+\end{itemize}
 
-    % Base connections and Input
-    \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
-    \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
-
-    % Voltage divider (R1, R2) and Vcc
-    \draw (B_node |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
-    \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -4) node[ground]{};
-
-    % Collector connections and Vcc
-    \draw (Q1.C) to[short, -*] ++(0,0.5) coordinate(C_split);
-    \draw (C_split |- 0, 3.5) node[vcc]{$V_{cc}$} to[R, l=$R_C$, i_=$I_2$] (C_split);
-
-    % Output path
-    \draw (C_split) to[C, l=$C_c$, -*] ++(2.5,0) coordinate(Out_node);
-    \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
-    
-    % Load resistor
-    \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -4) node[ground]{};
-
-    % Emitter connections (Degeneration: RE1, RE2, and CE)
-    \draw (Q1.E) to[R, l=$R_{E1}$, -*] ++(0,-1.5) coordinate(E_mid);
-    \draw (E_mid) to[R, l=$R_{E2}$] (E_mid |- 0, -4) node[ground]{};
-    \draw (E_mid) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -4) node[ground]{};
-\end{circuitikz}
-
-\begin{circuitikz}[american, thick]
-    % Main Amplifying Transistor
-    \node[npn] (Q1) at (0,0) {};
-    \node at (-0.6, 0.5) {$Q_1$}; 
-
-    % Base connections and Input
-    \draw (Q1.B) to[short, -*] ++(-1.5,0) coordinate(B_node);
-    \draw (B_node) to[C, l=$C_{in}$, -o] ++(-2,0) node[left]{$V_{in}$};
-
-    % Voltage divider (R1, R2) and Vcc
-    \draw (B_node |- 0, 5) node[vcc]{$V_{cc}$} to[R, l=$R_1$, i=$I_1$] (B_node);
-    \draw (B_node) to[R, l=$R_2$] (B_node |- 0, -4) node[ground]{};
-
-    % Active Load (Current Mirror: Q2 and Q3)
-    % Q2 is flipped horizontally (xscale=-1) so its base points right
-    \node[pnp, xscale=-1] (Q2) at (0,3) {};
-    \node at (-0.6, 3) {$Q_2$}; 
-    \node[pnp] (Q3) at (8,3) {};
-    \node at (8.6, 3) {$Q_3$};
-
-    % Connect Q1 Collector to Q2 Collector
-    \draw (Q1.C) -- (Q2.C) coordinate[midway] (C_out);
-    
-    % Current Mirror Connections
-    \draw (Q2.B) -- (Q3.B) coordinate[pos=1] (midB);
-    \draw (midB) node[circ]{} |- (Q3.C) node[circ]{}; 
-    
-    % Vcc connections for Active Load
-    \draw (Q2.E |- 0, 5) node[vcc]{$V_{cc}$} to[short, i=$I_2$] (Q2.E);
-    \draw (Q3.E |- 0, 5) node[vcc]{$V_{cc}$} to[short, i=$I_3$] (Q3.E);
-
-    % R3 for the current mirror reference
-    \draw (Q3.C) to[R, l=$R_3$] (Q3.C |- 0, -4) node[ground]{};
-
-    % Output path
-    \draw (C_out) to[C, l=$C_c$, *-*] ++(4,0) coordinate(Out_node);
-    \draw (Out_node) to[short, -o] ++(1.5,0) node[right]{$V_{out}$};
-    
-    % Load resistor (now safely to the right of the current mirror)
-    \draw (Out_node) to[R, l_=$R_L$] (Out_node |- 0, -4) node[ground]{};
-
-    % Emitter connections (RE and CE)
-    \draw (Q1.E) to[short, -*] ++(0,-0.5) coordinate(E_split);
-    \draw (E_split) to[R, l=$R_E$] (E_split |- 0, -4) node[ground]{};
-    \draw (E_split) -- ++(1.5,0) coordinate(CE_top) to[C, l=$C_E$] (CE_top |- 0, -4) node[ground]{};
-\end{circuitikz}
-
-\subsection*{1.3 Power Dissipation --- Where Does the Energy Go?}
-\addcontentsline{toc}{subsection}{1.3 Power Dissipation}
-
-Every component in a circuit that carries a current and has a voltage across it dissipates power as heat.
-The \textbf{total power} drawn from the supply $V_{CC}$ is the most important sustainability metric, because it determines both the running cost and the heat generated.
-
-\begin{infobox}[Derivation of $P_{total}$ = $V_{CC} I_{total}$]
-The supply rail $V_{CC}$ provides current to two parallel paths: the voltage-divider branch ($I_1$ through $R_1$ and $R_2$) and the collector branch ($I_2$ through $R_C$ and the transistor).
-By \textbf{Kirchhoff's Current Law (KCL)} at the $V_{CC}$ node:
+Then, from research, the peak output voltage $v_{out}$ is given as:
 \[
-    I_{total} = I_1 + I_2 = \frac{V_{CC}}{R_1 + R_2} + I_C
+v_{out} = \min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}
 \]
-Since all this current flows from $V_{CC}$ and the negative supply terminal is ground (0\,V), the power delivered by the supply is simply:
+
+And since our voltage swing is the peak to peak, we will have to multiply $v_{out}$ by 2:
 \[
-    \boxed{P_{total} = V_{CC} \times I_{total} = V_{CC}\!\left(\frac{V_{CC}}{R_1+R_2} + I_C\right)}
+    \boxed{V_{swing} = 2 \times v_{out}}
 \]
-This is a direct consequence of the definition of electrical power ($P = V \times I$) applied to the supply source.
-Note that $I_C$ carries most of the power --- and $I_C$ is itself set by the biasing resistors and $\beta$, as derived in Part~2.
-\end{infobox}
 
-For Circuit C, the active-load current mirror adds a third current branch through Q2 and Q3, so:
-\[
-    I_{total} = I_1 + I_{C1} + I_{C3}, \quad P_{total} = V_{CC}(I_1 + 2I_C)
-\]
-(approximately, assuming the mirror is ideal and $I_{C2} \approx I_{C3} \approx I_{C1}$).
-This explains why Circuit C draws approximately twice the collector-branch current compared to Circuit A.
+It is important to note here that a well-designed amplifier is the one that places the $V_{CE}$ at the midpoint between saturation and cutoff, hence maximising $V_{swing}$. And generally, the lower the $V_{CE}$, the lower the $V_{swing}$, because low $V_{CE}$ means the transistor is closer to saturation, which limits the voltage swing from the other end.
 
-\subsection*{1.4 Voltage Swing --- How Large a Signal Can We Amplify?}
-\addcontentsline{toc}{subsection}{1.4 Voltage Swing}
+\subsection*{1.5 Bandwidth Formula}
+\addcontentsline{toc}{subsection}{1.5 Bandwidth Formula}
 
-The \textbf{voltage swing} $V_{swing}$ is the peak-to-peak output voltage range the amplifier can deliver without \emph{clipping} (distorting) the signal.
-Clipping happens when the transistor is driven out of the active region --- either into \textbf{saturation} (transistor fully ON) or into \textbf{cutoff} (transistor fully OFF).
-
-\begin{infobox}[{Derivation of $V_{swing}$ from Load-Line Analysis}]
-Consider the DC load line for the collector circuit (KVL around the collector loop):
-\[
-    V_{CC} = I_C R_C + V_{CE} + I_E R_E
-\]
-The transistor can swing between two extremes:
-\begin{enumerate}
-    \item \textbf{Cutoff}: $I_C \to 0$, so $V_{CE} \to V_{CC}$ (maximum voltage across transistor).
-    \item \textbf{Saturation}: $V_{CE} \to 0$\,V, so $I_C \to V_{CC}/(R_C + R_E)$ (maximum current).
-          At saturation, the collector voltage equals $I_{C(sat)} \cdot R_E$, which from the Th\'{e}venin equivalent seen by the collector is approximately:
-          \[
-              V_{C(sat)} \approx V_{CC} \cdot \frac{R_2 \| R_E}{R_2 \| R_E + R_1 \| R_C}
-          \]
-\end{enumerate}
-The transistor's quiescent (DC) operating point sits at $V_{CE}$ somewhere between these two extremes.
-The output can swing by at most $v_{out}$ in either direction before hitting a limit, where:
-\[
-    v_{out} = \min(V_{C(sat)},\; V_{C(cutoff)}) - V_{CE}
-\]
-The $\min(\cdot)$ picks the \emph{closer} limit because the output cannot swing past the nearer boundary.
-Since the CE amplifier is a linear (symmetric) amplifier, it can swing equally far in both the positive and negative direction, giving:
-\[
-    \boxed{V_{swing} = 2\,v_{out}}
-\]
-A well-designed amplifier places $V_{CE}$ at the midpoint between saturation and cutoff, maximising $V_{swing}$.
-\end{infobox}
-
-This is why \textbf{$V_{CE}$ is so important} from a design perspective: a transistor biased with too low a $V_{CE}$ (like Circuit A at $1.42\,\text{V}$) has very little room to swing before it saturates, while one biased near mid-supply (like Circuit C at $5.66\,\text{V}$) can swing almost the full supply range.
-
-\subsection*{1.5 Bandwidth --- What Range of Frequencies Can Be Amplified?}
-\addcontentsline{toc}{subsection}{1.5 Bandwidth}
-
-The \textbf{bandwidth (BW)} of an amplifier is the range of frequencies over which the gain is within $1/\sqrt{2} \approx 70.7\%$ of its mid-band value (i.e., within $-3\,\text{dB}$):
+Based on research, the bandwidth is the range of input frequencies in which the input can be amplified. From research the formula for bandwidth is:
 \[
     \boxed{BW = f_H - f_L}
 \]
+
 where $f_H$ is the \textbf{upper} ($-3\,\text{dB}$) cutoff frequency and $f_L$ is the \textbf{lower} ($-3\,\text{dB}$) cutoff frequency.
 
-\subsubsection*{Lower Cutoff Frequency $f_L$ --- Set by Coupling and Bypass Capacitors}
+\subsubsection*{Lower Cutoff Frequency $f_L$}
 
-At low frequencies, the coupling capacitors ($C_{in}$, $C_C$) and the emitter bypass capacitor ($C_E$) start to behave like significant impedances.
-Each capacitor, together with the resistance it sees, forms a \textbf{high-pass RC filter} with a cutoff frequency:
+Theoretically, $f_L$ is determined as the highest frequency from all the available capacitors in the circuit ($C_{in}$, $C_C$, $C_E$). Recall the formula for the frequency of capacitors.
 \[
-    f_c = \frac{1}{2\pi RC}
+    f_c = \frac{1}{2\pi Z_C}
 \]
-There are three such poles in the circuit:
+There are three such capacitors in the circuit:
 \begin{align*}
     f_{c_{in}} &= \frac{1}{2\pi C_{in} \cdot Z_{in}} & \text{(input coupling pole)} \\
-    f_{c_C}    &= \frac{1}{2\pi C_C (R_C + R_L)}      & \text{(output coupling pole)} \\
-    f_{c_E}    &= \frac{1}{2\pi C_E \cdot r_e}         & \text{(emitter bypass pole)}
+    f_{c_C}    &= \frac{1}{2\pi C_C \cdot Z_{C}}      & \text{(output coupling pole)} \\
+    f_{c_E}    &= \frac{1}{2\pi C_E \cdot Z_{E}}         & \text{(emitter bypass pole)} \\ \\
+    f_L &= \max(f_{c_{in}}, f_{c_C}, f_{c_E})
 \end{align*}
-The lower cutoff frequency is dominated by the \emph{highest} of these three poles, because whichever capacitor ``gives up'' first (stops looking like a short circuit) limits the low-frequency response:
-\[
-    \boxed{f_L = \max(f_{c_{in}},\; f_{c_C},\; f_{c_E})}
-\]
-In practice, $f_{c_E}$ is often the dominant pole because $r_e$ (a few ohms to tens of ohms) is much smaller than $R_C$ or $Z_{in}$, making $C_E$ need to be much larger to keep the pole frequency low.
 
-\subsubsection*{Upper Cutoff Frequency $f_H$ --- Set by Internal Junction Capacitances}
+\subsubsection*{Upper Cutoff Frequency $f_H$}
 
-At high frequencies, the transistor's own internal junction capacitances ($C_\pi$ between base and emitter, and $C_\mu$ between base and collector) begin to shunt signal current away from the output.
-The most critical effect is the \textbf{Miller effect}: the base-collector capacitance $C_\mu$ is effectively \emph{multiplied} by $(1 - A_v)$ as seen from the input, because any voltage at the base is amplified to a much larger (inverted) voltage at the collector, making $C_\mu$ ``look'' much larger:
-\[
-    C_{Mi} = C_\mu (1 - A_v) \approx C_\mu (1 + |A_v|) \qquad \text{(Miller input capacitance)}
-\]
-This large effective input capacitance, combined with the Th\'{e}venin resistance driving the base ($R_{th(in)} = R_1 \| R_2 \| Z_{in}$), forms a \textbf{low-pass RC pole} that limits high-frequency gain:
+In order to calculate $f_H$, we need to know the capacitors \textbf{inside} the transistor itself. (Turns out, inside the BJT we have two capacitors). One of them is called $C_\pi$ which is between the base and emitter, and also $C_\mu$ which is between base and collector.
+
+\begin{circuitikz}[american, thick]
+    
+    % Base spreading resistance r_x
+    \draw (-2.5, 2) node[anchor=east] {B} to[R, l=$r_x$, o-*] (0,2) node[above=0.1cm] {B$'$};
+    
+    % r_pi
+    \draw (0,2) to[R, l=$r_\pi$, v=$v_\pi$] (0,0);
+    
+    % C_pi parallel to r_pi
+    \draw (0,2) to[short, -*] (2.5,2)
+          to[C, l=$C_\pi$] (2.5,0);
+          
+    % C_mu between Internal Base and Collector
+    \draw (2.5,2) to[C, l=$C_\mu$] (6.5,2);
+    
+    % Dependent current source
+    \draw (6.5,2) to[cI, l=$g_m v_\pi$, *-*] (6.5,0);
+    
+    % Output resistance r_o
+    \draw (6.5,2) to[short, -*] (8.5,2)
+          to[R, l=$r_o$] (8.5,0);
+          
+    % Collector terminal
+    \draw (8.5,2) to[short, -o] (10.5, 2) node[anchor=west] {C};
+    
+    % Emitter common line (bottom)
+    \draw (-2.5, 0) node[anchor=east] {E} to[short, o-*] (0,0)
+          to[short, -*] (2.5,0)
+          to[short, -*] (6.5,0)
+          to[short, -*] (8.5,0)
+          to[short, -o] (10.5, 0) node[anchor=west] {E};
+
+\end{circuitikz}
+
+from research, $f_H$ is the minimum of $f_{Hi}$ and $f_{Ho}$.
+
+$f_{Hi}$ has the formula of:
 \[
     f_{Hi} = \frac{1}{2\pi \, R_{th(in)} \cdot C_{in(tot)}}, \qquad C_{in(tot)} = C_\pi + C_{Mi}
 \]
-A similar pole exists at the output. The upper cutoff is the \emph{lower} of the two high-frequency poles (the one that limits first):
-\[
-    \boxed{f_H = \min(f_{Hi},\; f_{Ho})}
-\]
-This is why high gain and wide bandwidth are in conflict: a larger $|A_v|$ makes $C_{Mi}$ larger, which lowers $f_H$ and shrinks the bandwidth.
-This fundamental limitation is captured by the \textbf{gain-bandwidth product}, which is approximately constant for a given transistor.
 
+Where $C_{Mi}$ is the Miller input capacitance:
+\[
+    C_{Mi} = C_\mu (1 - A_v) \approx C_\mu (1 + |A_v|) 
+\]
+
+$f_{Ho}$ has the formula of:
+\[
+    f_{Ho} = \frac{1}{2\pi \, R_{th(out)} \cdot C_{out(tot)}}, \qquad C_{out(tot)} = C_{Mo}
+\]
+
+Where $C_{Mo}$ is the Miller output capacitance:
+\[
+    C_{Mo} = C_\mu (1 - \frac{1}{A_v})
+\]
+
+\[
+    \boxed{f_H = \min(f_{Hi}, f_{Ho})}
+\]
+
+Even though the theoretical calculation of BW seemed quite intimidating and unintuitive, thankfully there's a nice visual representation of what BW means. It doesn't really help much in the theoretical calculation, but it is quite useful to understand BW. Basically, if we plot a graph of voltage gain vs frequency, where the voltage gain is in dB (dB = $20\log_{10}(A_v)$), the graph will rise and then become flat and then drop. Then, the BW is basically the length of region where the graph is flat, with a 3dB tolerance. Technically, it is the difference between the upper and lower cutoff frequencies, $f_H$ and $f_L$, which are the frequencies where the voltage gain drops by 3dB from the maximum voltage gain.
+
+\begin{tikzpicture}
+    % semilogxaxis uses a logarithmic scale for the X-axis and linear for Y-axis
+    \begin{semilogxaxis}[
+        width=14cm, height=9cm,
+        xlabel={Frequency, $f$ (Hz) [Log Scale]},
+        ylabel={Voltage Gain, $|A_v|$ (dB)},
+        ymin=0, ymax=50,
+        xmin=10, xmax=100000,
+        grid=both,
+        grid style={line width=.1pt, draw=gray!30},
+        major grid style={line width=.2pt,draw=gray!50},
+        minor x tick num=8,
+        title={\textbf{BJT Amplifier Frequency Response and Bandwidth}},
+        axis lines=left,
+        tick align=outside,
+        ]
+        
+        % Plot the continuous frequency response curve
+        % Setting Midband Gain = 40dB, f_L = 100 Hz, f_H = 10000 Hz
+        \addplot [
+            domain=10:100000,
+            samples=200,
+            ultra thick,
+            blue
+        ] {40 - 10*log10(1 + (100/x)^2) - 10*log10(1 + (x/10000)^2)};
+        
+        % Midband Gain reference line
+        \draw[dashed, red, thick] (10, 40) -- (100000, 40) 
+            node[pos=0.05, above, text=black] {$A_{mid}$ (Midband Gain)};
+        
+        % -3dB threshold line
+        \draw[dashed, orange, thick] (10, 37) -- (100000, 37) 
+            node[pos=0.05, below, text=black] {$A_{mid} - 3\text{dB}$};
+        
+        % Vertical dashed lines marking the cutoff frequencies
+        \draw[dashed, black, thick] (100, 0) -- (100, 37);
+        \draw[dashed, black, thick] (10000, 0) -- (10000, 37);
+        
+        % Labels for f_L and f_H
+        \node[fill=white, draw=black, thick, inner sep=2pt, rounded corners=2pt] at (100, 5) {$f_L$};
+        \node[fill=white, draw=black, thick, inner sep=2pt, rounded corners=2pt] at (10000, 5) {$f_H$};
+        
+        % Horizontal arrow denoting the Bandwidth (f_H - f_L)
+        \draw[<->, very thick] (100, 20) -- (10000, 20) 
+            node[midway, fill=white, inner sep=4pt] {\textbf{Bandwidth (BW)}};
+        
+        % Annotations for the different regions of the graph
+        \node[align=center] at (30, 25) {Low-Frequency\\Roll-off};
+        \node[align=center, fill=white, inner sep=2pt] at (1000, 32) {Midband\\Region};
+        \node[align=center] at (35000, 25) {High-Frequency\\Roll-off};
+        
+        % Dots placed at the exact 3dB cutoff intersections
+        \node[circle, fill=black, inner sep=1.5pt] at (100, 37) {};
+        \node[circle, fill=black, inner sep=1.5pt] at (10000, 37) {};
+        
+    \end{semilogxaxis}
+\end{tikzpicture}
+
+\subsection*{1.5 Analysis Strategy}
+\addcontentsline{toc}{subsection}{1.5 Analysis Strategy}
+
+The following is the analysis strategy for the current report.
+\begin{enumerate}
+    \item DC Analysis for all three circuits to obtain their respective $I_C$, $I_E$, $I_B$, $V_{CE}$, $V_{swing}$ and $P_{total}$ in terms of controllable variables ($V_{cc}$, $R_1$, $R_2$, $R_C$, $R_E$, $C_C$, $C_E$, etc)
+    \item AC Analysis using T-model for all three circuits to obtain $A_v$, $Z_i$, $Z_o$, $BW$ in terms of controllable variables ($V_{cc}$, $R_1$, $R_2$, $R_C$, $R_E$, $C_C$, $C_E$, etc)
+    \item Utilize a simulation website to identify the relationship between the circuit attributes by modifying some of the controllable variables in the simulation.
+    \item Construct a performance trade off polygon based on the relationship obtained from the simulation website.
+    \item Simulate all three circuits using PSpice to verify the performance trade off polygon.
+    \item Based on the performance trade off polygon and the simulation results, analyze the three circuits in terms of their sustainability.
+    \item Conclude and compare the three circuits to determine which one is the most sustainable.
+\end{enumerate}
+
+\newpage
 
 \section*{PART 2: DC/Transient Analysis}
 \addcontentsline{toc}{section}{PART 2: DC/Transient Analysis}
@@ -598,48 +742,7 @@ V_{C(sat)} &= I_E R_E\\
  &\qquad - V_{CC} - V_{BE} - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\Big)
 \end{align*}
 
-\subsection*{DC Analysis \& Power Dissipation Summary}
-\addcontentsline{toc}{subsection}{DC Analysis \& Power Dissipation Summary}
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{2.0}
-    \begin{tabular}{@{}ll@{}}
-        \toprule
-        \textbf{Circuit} & \textbf{Parameters} \\
-        \midrule
-        \textbf{A} & 
-        $\begin{aligned}
-            I_B &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \\
-            I_C &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times \beta \\
-            I_E &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1) \\
-            P_{total} &= V_{CC} \left(\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times \beta\right) \\
-            V_{swing} &= 2\Big[V_{CC} \min \Big(1, \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C}\Big) \\
-            &\qquad - \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta R_C + (\beta + 1) R_E)\Big)\Big]
-        \end{aligned}$ \\
-        \midrule
-        \textbf{B} & 
-        $\begin{aligned}
-            I_B &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \\
-            I_C &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times \beta \\
-            I_E &= \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1) \\
-            P_{total} &= V_{CC} \left(\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times \beta\right) \\
-            V_{swing} &= 2\Big[V_{CC} \min \Big(1, \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C}\Big) \\
-            &\qquad - \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta R_C + (\beta + 1) (R_{E1}+R_{E2}))\Big)\Big]
-        \end{aligned}$ \\
-        \midrule
-        \textbf{C} & 
-        $\begin{aligned}
-            I_B &= \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \\
-            I_C &= \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times \beta \\
-            I_E &= \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \\
-            P_{total} &= V_{CC} \left(\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times 2\beta\right) \\
-            v_{swing} &= 2\Big(\min\Big(\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E, V_{CC} - V_{BE}\Big) \\
-            &\qquad - V_{CC} - V_{BE} - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\Big)
-        \end{aligned}$ \\
-        \bottomrule
-    \end{tabular}
-    \caption{Summary of DC bias parameters and power dissipation across the three topologies.}
-\end{table}
+\newpage
 
 \section*{PART 3: AC/Transient Analysis}
 \addcontentsline{toc}{section}{PART 3: AC/Transient Analysis}
@@ -910,84 +1013,12 @@ BW &= f_H - f_L\\
 \Bigg)
 \end{align*}
 
-\subsection*{Small-Signal AC Performance Summary}
-\addcontentsline{toc}{subsection}{Small-Signal AC Performance Summary}
-{
-\renewcommand{\arraystretch}{2.0}
-\begin{longtable}{@{}ll@{}}
-\caption{Summary of key small-signal AC performance equations parameterized by $I_C$.} \\
-\toprule
-\textbf{Circuit} & \textbf{Parameters} \\
-\midrule
-\endfirsthead
-\multicolumn{2}{c}{{\tablename\ \thetable{} -- \textit{Continued from previous page}}} \\
-\toprule
-\textbf{Circuit} & \textbf{Parameters} \\
-\midrule
-\endhead
-\midrule \multicolumn{2}{r}{\textit{Continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
-        \textbf{A} & 
-        $\begin{aligned}
-            Z_{in} &= \frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}R_2/(R_1+R_2)-V_{BE}} \\
-            Z_{out} &= R_C \parallel R_L \\
-            A_v &= -\frac{\alpha (R_C \parallel R_L)}{V_T} \times \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1) \\
-            BW &= \min\Bigg(
-                \frac{1}{2\pi (R_1 \parallel R_2 \parallel (1+\beta)(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}))} \\
-            &\qquad\qquad\qquad \times \frac{1}{\left(C_\pi + C_\mu \left(1 + \frac{\alpha}{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}(R_C \parallel R_L)\right)\right)}, \\
-            &\qquad \frac{1}{2\pi (R_C \parallel R_L) C_\mu \left(1 + \frac{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}{\alpha(R_C \parallel R_L)}\right)}
-            \Bigg) \\
-            &\qquad - \max\Bigg(
-                \frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}, \\
-            &\qquad\qquad\qquad \frac{1}{2\pi C_C (R_C + R_L)}, \\
-            &\qquad\qquad\qquad \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E}
-            \Bigg)
-        \end{aligned}$ \\
-        \midrule
-        \textbf{B} & 
-        $\begin{aligned}
-            Z_{in} &= (1+\beta) \Big(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}\Big) \\
-            Z_{out} &= R_C \parallel R_L \\
-            A_v &= -\frac{\alpha}{\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)}+R_{E1}}(R_C \parallel R_L) \\
-            BW &= \min\Bigg(
-                \frac{1}{2\pi (R_1 \parallel R_2 \parallel (1+\beta)(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))} \\
-            &\qquad\qquad\qquad \times \frac{1}{(C_\pi + C_\mu \left(1 + \frac{\alpha(R_C \parallel R_L)}{r_e + R_{E1}}\right))}, \\
-            &\qquad \frac{1}{2\pi R_{th(out)} (C_\mu \left(1 + \frac{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)}) + R_{E1}}{\alpha(R_C \parallel R_L)}\right))}
-            \Bigg) \\
-            &\qquad - \max\Bigg(
-                \frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))}, \\
-            &\qquad\qquad\qquad \frac{1}{2\pi C_C (R_C + R_L)}, \\
-            &\qquad\qquad\qquad \frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)}
-            \Bigg)
-        \end{aligned}$ \\
-        \midrule
-        \textbf{C} & 
-        $\begin{aligned}
-            Z_{in} &= \frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}} \\
-            Z_{out} &= R_L \\
-            A_v &= -\frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \\
-            BW &= \min\Bigg(
-                \frac{1}{2\pi (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})} \\
-            &\qquad\qquad\qquad \times \frac{1}{(C_{\pi1} + (C_{\mu1} \left(1 + \frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \right)))}, \\
-            &\qquad \frac{1}{2\pi R_L (C_{\mu1} \left(1 - \frac{1}{(-\frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1))}\right) + C_{\mu2})}
-            \Bigg) \\
-            &\qquad - \max\Bigg(
-                \frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})}, \\
-            &\qquad\qquad\qquad \frac{1}{2\pi C_C (R_L)}, \\
-            &\qquad\qquad\qquad \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))}
-            \Bigg)
-        \end{aligned}$ \\
-\end{longtable}
-}
-
 \section*{Part 4: Results/Discussion}
 \addcontentsline{toc}{section}{Part 4: Results/Discussion}
 
 \subsection*{Performance Metric Polygons (Computer-Aided)}
 \addcontentsline{toc}{subsection}{Performance Metric Polygons (Computer-Aided)}
-Based on the equations derived above, a simulation website is created to analyze the change in output properties compared to the change in input properties, hence creating/deriving the performance Metric Polygon as adhered to that of Figure 1. The following images are the screenshots of the result.
+Based on the equations derived above, a simulation website is created to analyze the change in output properties compared to the change in input properties, hence creating/deriving the Performance Metric Polygon as adhered to that of Figure 1. The following images are the screenshots of the result.
 
 \begin{figure}[H]
     \centering
@@ -1038,152 +1069,111 @@ Based on the equations derived above, a simulation website is created to analyze
 
 The sidebars on the left are modifiable variables that are used to control the output properties, while the lines connecting the output properties illustrates which properties are corelated, and whether if they are related in the same/opposite direction. (Green line means they increase together, Red line means when one increase, the other decrease).
 
+The website that are used to obtain the Metric Polygon can be accessed via the following \href{https://ec-assignment-simulation.netlify.app/}{link}
+
 The following is the text-based finding of the Metric Polygon, which is used to create the final performance trade-off polygon:
 
-\vspace{1em}
-When $V_{CC} (V)$ decreases:
-
-Circuit A: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit B: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit C: $P_{total}$ decreases, $V_{swing}$ increases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-\vspace{1em}
-When $V_{BE} (V)$ increases:
-
-Circuit A: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit B: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit C: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-\vspace{1em}
-When $V_T (V)$ decreases:
-
-Circuit A: $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases
-
-Circuit B: $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases
-
-Circuit C: $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases
-
-\vspace{1em}
-When $\beta$ increases:
-
-Circuit A: $P_{total}$ increases, $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ increases, $I_C$ increases, $I_E$ increases, $I_B$ decreases
-
-Circuit B: $P_{total}$ increases, $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ increases, $I_C$ increases, $I_E$ increases, $I_B$ decreases
-
-Circuit C: $P_{total}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ increases, $I_C$ increases, $I_E$ increases, $I_B$ decreases
-
-\vspace{1em}
-When $R_1$ increases:
-
-Circuit A: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit B: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ decreases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit C: $P_{total}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-\vspace{1em}
-When $R_2$ increases:
-
-Circuit A: $P_{total}$ increases, $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases, $I_C$ increases, $I_E$ increases, $I_B$ increases
-
-Circuit B: $P_{total}$ increases, $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases, $I_C$ increases, $I_E$ increases, $I_B$ increases
-
-Circuit C: $P_{total}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{in}$ decreases, $I_C$ increases, $I_E$ increases, $I_B$ increases
-
-\vspace{1em}
-When $R_C$ increases:
-
-Circuit A: $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{out}$ increases
-
-Circuit B: $V_{swing}$ increases, $A_v$ decreases, $BW$ decreases, $Z_{out}$ increases
-
-Circuit C: No change
-
-\vspace{1em}
-When $R_E$ increases:
-
-Circuit A: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit B: No change
-
-Circuit C: $P_{total}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-\vspace{1em}
-When $R_{E1}$ increases:
-
-Circuit A: No change
-
-Circuit B: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit C: No change
-
-\vspace{1em}
-When $R_{E2}$ increases:
-
-Circuit A: No change
-
-Circuit B: $P_{total}$ decreases, $V_{swing}$ decreases, $A_v$ increases, $BW$ increases, $Z_{in}$ increases, $I_C$ decreases, $I_E$ decreases, $I_B$ decreases
-
-Circuit C: No change
-
-\vspace{1em}
-When $R_L$ increases:
-
-Circuit A: $A_v$ decreases, $BW$ decreases, $Z_{out}$ increases
-
-Circuit B: $A_v$ decreases, $BW$ decreases, $Z_{out}$ increases
-
-Circuit C: $A_v$ decreases, $BW$ decreases, $Z_{out}$ increases
-
-\vspace{1em}
-When $C_{in}$ increases:
-
-Circuit A: No change
-
-Circuit B: No change
-
-Circuit C: No change
-
-\vspace{1em}
-When $C_C$ increases:
-
-Circuit A: No change
-
-Circuit B: No change
-
-Circuit C: No change
-
-
-\vspace{1em}
-When $C_E$ increases:
-
-Circuit A: $BW$ increases
-
-Circuit B: $BW$ increases
-
-Circuit C: $BW$ increases
-
-\vspace{1em}
-When $C_\pi$ increases:
-
-Circuit A: $BW$ decreases
-
-Circuit B: $BW$ decreases
-
-Circuit C: $BW$ decreases
-
-\vspace{1em}
-When $C_\mu$ increases:
-
-Circuit A: $BW$ decreases
-
-Circuit B: $BW$ decreases
-
-Circuit C: $BW$ decreases
+{
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{longtable}{llccccccccc}
+    \caption{Performance Metric Changes in Response to Input Parameter Variations}
+    \label{tab:performance_metrics} \\
+    \toprule
+    \textbf{Condition} & \textbf{Circuit} & \textbf{$P_{total}$} & \textbf{$V_{swing}$} & \textbf{$A_v$} & \textbf{$BW$} & \textbf{$Z_{in}$} & \textbf{$Z_{out}$} & \textbf{$I_C$} & \textbf{$I_E$} & \textbf{$I_B$} \\
+    \midrule
+\endfirsthead
+    \multicolumn{11}{c}{{\tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    \textbf{Condition} & \textbf{Circuit} & \textbf{$P_{total}$} & \textbf{$V_{swing}$} & \textbf{$A_v$} & \textbf{$BW$} & \textbf{$Z_{in}$} & \textbf{$Z_{out}$} & \textbf{$I_C$} & \textbf{$I_E$} & \textbf{$I_B$} \\
+    \midrule
+\endhead
+    \midrule
+    \multicolumn{11}{r}{{Continued on next page}} \\
+\endfoot
+    \bottomrule
+\endlastfoot
+    $V_{CC} \downarrow$ 
+    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    \midrule
+    $V_{BE} \uparrow$ 
+    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    \midrule
+    $V_T \downarrow$ 
+    & A & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
+    & B & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
+    & C & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
+    \midrule
+    $\beta \uparrow$ 
+    & A & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    & B & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    & C & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    \midrule
+    $R_1 \uparrow$ 
+    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\downarrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    \midrule
+    $R_2 \uparrow$ 
+    & A & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    & B & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    & C & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    \midrule
+    $R_C \uparrow$ 
+    & A & -- & $\uparrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
+    & B & -- & $\uparrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
+    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    $R_E \uparrow$ 
+    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & C & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    \midrule
+    $R_{E1} \uparrow$ 
+    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    $R_{E2} \uparrow$ 
+    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    $R_L \uparrow$ 
+    & A & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
+    & B & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
+    & C & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
+    \midrule
+    $C_{in} \uparrow$ 
+    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_C \uparrow$ 
+    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_E \uparrow$ 
+    & A & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_\pi \uparrow$ 
+    & A & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_\mu \uparrow$ 
+    & A & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
+\end{longtable}
+}
 
 \subsection*{Performance Trade-Off Polygon}
 \addcontentsline{toc}{subsection}{Performance Trade-Off Polygon}
@@ -1400,8 +1390,8 @@ Based on the analysis from the simulation above, certain relationships between v
 
 \subsection*{PSpice Simulation}
 \addcontentsline{toc}{subsection}{PSpice Simulation}
-Based on the Performance Polygon drawn above, a PSpice Analysis is conducted to test whether if the Performance Polygon is accurate. In the PSpice Simulation, the following attributes are assessed: (Voltage Gain, Bandwidth, Output Voltage, Input Voltage, Voltage Swing, $I_C$, $I_B$, $I_E$)
-For simplicity sake, all resistors are set to 1k, all capacitors are set to 10uF, Vcc is 10V, and beta is set to 100.
+Based on the Performance Polygon drawn above, a PSpice Analysis is conducted to test whether if the Performance Polygon is accurate.
+For simplicity sake, all resistors are set to 1k$\Omega$, all capacitors are set to 10$\mu$F, $V_{CC}$ is 10V, and $\beta$ is 100.
 
 The following are the circuit diagrams and the simulation result of the three Circuits.
 
@@ -1584,18 +1574,16 @@ The following are the circuit diagrams and the simulation result of the three Ci
     \label{fig:circuit_c_ac_sweep}
 \end{figure}
 
+\newpage
+
 \section*{Part 5: Discussion and Conclusion}
 \addcontentsline{toc}{section}{Part 5: Discussion and Conclusion}
 
 \subsection*{5.1 Discussion}
 \addcontentsline{toc}{subsection}{5.1 Discussion}
 
-This report analysed three common-emitter (CE) amplifier topologies under the same supply voltage ($V_{CC} = 10\,\text{V}$), equal bias resistors ($R_1 = R_2 = 1\,\text{k}\Omega$), and equal load ($R_C = R_L = 1\,\text{k}\Omega$, $R_E = 1\,\text{k}\Omega$, all capacitors $= 10\,\mu\text{F}$, $\beta = 100$).
-The discussion below interprets what each result \emph{means} in plain terms, before drawing sustainability conclusions.
-
-\subsubsection*{5.1.1 DC Bias Comparison}
-
-The PSpice DC operating-point simulation produced the following measured values:
+\subsubsection*{5.1.1 DC Analysis Comparison}
+The DC analysis from PSpice produced the following measured values:
 
 \begin{table}[H]
     \centering
@@ -1615,26 +1603,17 @@ The PSpice DC operating-point simulation produced the following measured values:
     \label{tab:dc_comparison}
 \end{table}
 
-\paragraph{Circuit A --- Passive Resistive Loading.}
-Circuit A draws the highest quiescent collector current ($I_C \approx 4.28\,\text{mA}$) with the lowest $V_{CE}$ ($1.42\,\text{V}$).
-The transistor sits close to the boundary between the active and saturation regions.
-A low $V_{CE}$ means the transistor has little ``headroom'' before it clips the output signal, which limits the usable voltage swing.
-Because $I_C$ is high, the total power drawn from the supply is also the highest of the three circuits.
+\paragraph{Circuit A: }
+Circuit A has the highest $I_C$ with the lowest $V_{CE}$. From the concept of voltage swing, this means that the transistor sits close to the boundary between active and saturation region. Meaning, it has the lowest voltage swing. This is shown in the output graph as well, which looks almost flat. Because $I_C$ is the highest, the total power drawn from the supply is also the highest ($P_{total}$ = $V_{CC} \times I_{total}$), and $I_C$ is the greatest contributor to $I_{total}$
 
-\paragraph{Circuit B --- Emitter Degeneration.}
-By splitting the emitter resistor into $R_{E1}$ (unbyassed, signal-path) and $R_{E2}$ (bypassed by $C_E$), the DC bias forces the transistor to a higher $V_{CE}$ ($3.52\,\text{V}$) while halving the quiescent current ($I_C \approx 2.15\,\text{mA}$).
-The higher $V_{CE}$ gives the output signal more room to swing without clipping.
-At the same time, the lower $I_C$ means less power is wasted as heat in the transistor --- a direct sustainability benefit.
+\paragraph{Circuit B}
+By splitting the emitter resistor into $R_{E1}$ and $R_{E2}$, we get a higher $V_{CE}$ while halving $I_C$. The higher $V_{CE}$ means that the output has higher voltage swing, and lower $I_C$ means less power wasted.
 
-\paragraph{Circuit C --- Active Loading.}
-The current-mirror active load (Q2/Q3) replaces the passive collector resistor $R_C$ with a \emph{current source}.
-Q1's DC operating point is almost identical to Circuit A ($I_C \approx 4.28\,\text{mA}$) because the voltage-divider biasing network is the same.
-However, the active load pushes $V_{CE1}$ up to $5.66\,\text{V}$ --- the transistor is biased very close to mid-supply, giving an excellent symmetric voltage swing.
-The trade-off is that the current mirror itself draws additional current (Q2 and Q3), so the total power consumption is higher than Circuit A.
+\paragraph{Circuit C}
+From the DC analysis above, it can be seen that $I_C$ for Circuit C is almost similar to that of Circuit A, while it has the highest $V_{CE}$. This shows that Circuit C has the highest voltage swing while also having the highest power consumption.
 
 \subsubsection*{5.1.2 AC Performance Trade-offs}
-
-The key small-signal quantities derived analytically and confirmed by the metric-polygon simulation are summarised below.
+Using the small signal T model, we managed to derive various mathematical equations describing different attributes of the circuit in terms of controllable variables (R, C, etc). A simulation website is developed to analyze the relationship between the derived attributes, and a performance polygon is created based on the analysis. The following is the summary of the entire analysis finding.
 
 \begin{table}[H]
     \centering
@@ -1656,78 +1635,51 @@ The key small-signal quantities derived analytically and confirmed by the metric
     \label{tab:ac_comparison}
 \end{table}
 
-\paragraph{Voltage Gain.}
+\paragraph{Voltage Gain:}
 Circuit A achieves high gain because $A_v \approx -\frac{\alpha}{r_e}(R_C \| R_L)$ and $r_e$ is very small when $I_C$ is large.
-Circuit B intentionally trades gain for stability: the unbyassed $R_{E1}$ appears in the denominator as $r_e + R_{E1}$, which increases $r_e$ effectively and reduces $|A_v|$.
-The gain is therefore less sensitive to temperature changes in $\beta$ --- a valuable property in real-world designs.
-Circuit C replaces $R_C$ with a current-source active load, which presents a very high small-signal impedance to the collector.
-This drives the voltage gain close to the theoretical maximum of $g_m r_o$, making Circuit C the highest-gain configuration when an ideal active load is assumed.
+Circuit B intentionally trades gain for stability because of $R_{E1}$, which appears in the denominator of the gain equation, hence reducing the gain. Circuit C replaces $R_C$ with two mirrorred transistors, which had been analyzed to have the effect of driving the voltage gain very high.
 
-\paragraph{Bandwidth.}
-All three circuits share the same fundamental Miller-effect limitation: a large voltage gain amplifies the feedback capacitance $C_\mu$ at the input (Miller input capacitance $C_{Mi} = C_\mu(1-A_v)$), creating a low-pass pole that cuts off high frequencies.
-Circuit A has high gain, so $C_{Mi}$ is large, and bandwidth is moderate.
-Circuit B has a smaller gain magnitude, so $C_{Mi}$ is smaller, and in principle bandwidth can be wider --- however, the increased $Z_{in}$ can partially offset this.
-Circuit C has very high gain, so $C_{Mi}$ is the largest of the three, placing its high-frequency pole at a lower frequency.
-This demonstrates the fundamental \textbf{gain--bandwidth product trade-off}: you cannot freely increase both gain and bandwidth at the same time.
+\paragraph{Bandwidth:}
+From the analysis, we can see that the higher the gain of the circuit, the lower its bandwidth.
 
 \paragraph{Input Impedance.}
 $Z_{in} = (1+\beta)r_e$ for Circuit A.
 Because $r_e = V_T / I_E$ and $I_E$ is large, $r_e$ is small, making $Z_{in}$ small.
-A small $Z_{in}$ loads the signal source, which is generally undesirable.
-Circuit B adds $R_{E1}$ in series: $Z_{in} = (1+\beta)(r_e + R_{E1})$.
-This is significantly larger and reduces loading on the driving stage.
+Circuit B adds $R_{E1}$ in series which increases its $Z_{in}$. This means that Circuit B does not load the signal source as much as Circuit A.
 
-\paragraph{Output Impedance.}
-Circuits A and B both have $Z_{out} = R_C \| R_L$, which is moderate.
-Circuit C has $Z_{out} = R_L$ only (assuming an ideal current mirror), which is lower --- better for driving heavy loads without significant voltage drop.
+\paragraph{Output Impedance:}
+Both Circuit A and Circuit B have the same output impedance, while Circuit C only has $Z_{out} = R_L$ which is lower. This means Circuit C can drive larger loads without significant voltage drop.
 
 \subsubsection*{5.1.3 Metric Polygon Observations}
-
-The computer-aided metric polygon confirms the following relationships, which are consistent across all three circuits:
+A few key observations from the metric polygon:
 
 \begin{itemize}
-    \item \textbf{$I_C$ is the central driver.} Changing any external variable ($V_{CC}$, $R_1$, $R_E$, $\beta$) that raises $I_C$ simultaneously raises $P_{total}$ and $V_{swing}$ but \emph{reduces} $A_v$ and $BW$ (via a smaller $r_e$, which increases current-source load on the Miller capacitance).
-    This single observation explains most of the trade-off structure seen in all three circuits.
+    \item \textbf{$I_C$ is the central driver:} Changing almost any external variable will change $I_C$, and $I_C$ in turn changes almost all the other external variables. This single observation explains almost all of the trade-off structure seen in all three circuits.
 
     \item \textbf{$C_E$ is a free parameter for bandwidth.} Increasing $C_E$ improves $BW$ in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$.
-    This means that for a fixed DC operating point, choosing a larger bypass capacitor is a low-cost way to extend the bandwidth.
 
-    \item \textbf{Circuit C's $V_{swing}$ is inversely related to $V_{CC}$.} Unlike Circuits A and B (where higher $V_{CC}$ gives more swing), Circuit C shows the opposite trend because the active load fixes the current and the transistor's headroom is set by $V_{CE}$, which changes differently with supply voltage.
-
-    \item \textbf{Circuit B's $R_1$ uniquely suppresses $BW$.} In Circuit B, increasing $R_1$ reduces $BW$ (in addition to reducing $I_C$), whereas in Circuit A this effect is absent.
+    \item \textbf{Circuit B's $R_1$ suppresses $BW$.} In Circuit B, increasing $R_1$ reduces $BW$ (in addition to reducing $I_C$), whereas in Circuit A this effect is absent.
     This is because the larger Th\'{e}venin resistance $R_{TH} = R_1 \| R_2$ interacts with the effective emitter resistance $R_{E1} + r_e$ in the bandwidth calculation.
 \end{itemize}
 
 \subsection*{5.2 Sustainable Design Analysis}
 \addcontentsline{toc}{subsection}{5.2 Sustainable Design Analysis}
 
-\begin{infobox}[What is Sustainable Electronic Design?]
-In electronics, \emph{sustainable design} means choosing circuit architectures and operating points that minimise wasted power, reduce heat generation, extend component lifetime, and keep the design functional across a wide range of operating conditions --- all without sacrificing the required performance.
-\end{infobox}
+In electronics, sustainable design means choosing circuit designs that minimise wasted power, reduce heat generation, extend component life time, and keep the design functional across a wide range of operating conditions.
 
 \subsubsection*{5.2.1 Power Efficiency}
 
-The most direct sustainability metric is how much power the circuit draws relative to the useful output it delivers.
-Table~\ref{tab:dc_comparison} shows that:
-
 \begin{itemize}
-    \item \textbf{Circuit B} has the lowest quiescent current ($I_C \approx 2.15\,\text{mA}$, roughly \textbf{50\% of Circuits A and C}).
-    At $V_{CC} = 10\,\text{V}$, the collector-stage power saving compared to Circuit A is approximately:
-    \[
-        \Delta P = V_{CC}(I_{C,A} - I_{C,B}) = 10 \times (4.278 - 2.151) = \mathbf{21.27\,\text{mW saved}}
-    \]
-    Over $10^4$ hours of operation, this amounts to $\approx 0.21\,\text{kWh}$ per circuit --- a meaningful saving when multiplied across thousands of devices in production.
+    \item For power efficiency, \textbf{Circuit B} has the lower collector current, which as analyzed above, has the lowest power wastage hence the most efficient in terms of power use.
 
-    \item \textbf{Circuit C} adds two extra PNP transistors (Q2, Q3) to implement the current mirror.
-    The mirror draws an additional bias current $I_{C3} \approx 8.578\,\text{mA}$ (as measured in simulation), significantly increasing total supply current.
-    Despite its high voltage swing and gain, Circuit C is the \textbf{least power-efficient} of the three for the given component values.
+    \item \textbf{Circuit C} adds to extra PNP transistors, which draws more power, making it to least power-efficient. As seen in the DC result, it also has the highest IC.
 
-    \item \textbf{Circuit A} falls between B and C in terms of quiescent current, but its low $V_{CE}$ ($1.42\,\text{V}$) means most of the transistor's power is spent in a very thin active region, increasing sensitivity to temperature drift.
+    \item \textbf{Circuit A} has similar power consumption to \text{Circuit C}, but because of its low Voltage Swing, this means that most of the transistor's power is spent in a very thin active region. 
 \end{itemize}
 
 \subsubsection*{5.2.2 Thermal Stability and Reliability}
 
-Lower $I_C$ means less power dissipated \emph{inside} the transistor as heat ($P_{transistor} = V_{CE} \cdot I_C$).
+To analyze temperature, we need to look at the power dissipated inside the transistor instead of the power used up by the entire circuit. Hence, we need to look at $P_{transistor}$, which is $V_{CE}$ times $I_C$. 
 
 \begin{table}[H]
     \centering
@@ -1746,93 +1698,40 @@ Lower $I_C$ means less power dissipated \emph{inside} the transistor as heat ($P
 \end{table}
 
 \begin{itemize}
-    \item Circuit A dissipates the \textbf{least heat inside Q1} (6.07\,mW), which favours a long transistor lifetime.
-    However, the overall circuit dissipation is high because $R_C$ and $R_E$ also burn power.
-    \item Circuit B dissipates 7.57\,mW inside Q1 --- slightly more than A due to higher $V_{CE}$, but the \emph{total} circuit power is lower because $I_C$ is half as large, meaning the bias resistors and $R_C$ all run cooler.
-    \item Circuit C dissipates \textbf{24.25\,mW inside Q1 alone} --- four times more than Circuit A.
-    The active load transistors add further heat.
-    In a battery-powered or thermally constrained environment, this is a significant drawback.
+    \item From the results above, it can be seen that \textbf{Circuit A} dissipates the least heat, making it the most favorable, followed by \textbf{Circuit B} and then \textbf{Circuit C}.
 \end{itemize}
-
-The emitter-degeneration resistor $R_{E1}$ in Circuit B provides \emph{negative feedback} that also stabilises the operating point against temperature changes.
-When temperature rises, $I_C$ tends to increase; but a higher $I_C$ creates a larger voltage drop across $R_{E1}$, which reduces $V_{BE}$ and brings $I_C$ back down.
-This \textbf{self-correcting mechanism} means Circuit B maintains its bias point more reliably over time without additional cooling, extending component lifetime.
 
 \subsubsection*{5.2.3 Component Count and Complexity}
 
-Sustainable design also considers how many components are required, since more components mean more raw materials, more solder joints, more failure points, and higher embodied energy in manufacture.
+Sustainable design also factors in how many components are used. In this case, Circuit A uses 8 components, Circuit B uses one additional resistor, while Circuit C adds two more PNP transistors, which makes it significantly more complex (obviously seen in the DC and AC analysis of circuit C).
 
 \begin{itemize}
-    \item \textbf{Circuit A}: 1 transistor, $R_1$, $R_2$, $R_C$, $R_E$, $C_{in}$, $C_C$, $C_E$ --- \textbf{8 components}.
-    \item \textbf{Circuit B}: Same as A plus one additional resistor ($R_{E1}$ is split into $R_{E1}$ and $R_{E2}$) --- \textbf{9 components}, one more than A.
-    \item \textbf{Circuit C}: Adds two PNP transistors (Q2, Q3) and a reference resistor ($R_3$), with $R_C$ removed --- \textbf{10 components}.
+    \item \textbf{Circuit B} achieves its improved stability and sustainability by only the cost of one extra resistor, which is an excellent trade off.
 \end{itemize}
-
-Circuit B achieves its improved stability at the cost of only \emph{one} extra resistor --- an excellent return on investment.
-Circuit C requires two additional active devices (transistors), which are more expensive, consume more area in an integrated circuit, and introduce additional failure modes.
-
-\subsubsection*{5.2.4 Quantitative Sustainability Scorecard}
-
-The table below consolidates the key sustainability-relevant figures. Each metric is scored from 1 (worst) to 3 (best) across the three circuits.
-
-\begin{table}[H]
-    \centering
-    \caption{Quantitative sustainability comparison of the three CE amplifier topologies.}
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{lcccc}
-        \toprule
-        \textbf{Sustainability Metric} & \textbf{Circuit A} & \textbf{Circuit B} & \textbf{Circuit C} \\
-        \midrule
-        Quiescent $I_C$ (mA)         & 4.278 & \textbf{2.151} & 4.281 \\
-        $\Delta P$ saved vs.\ A (mW) & ---   & \textbf{+21.3} & $-$43.7 \\
-        $P_{transistor}$ (mW)        & 6.07  & 7.57  & \textbf{24.25} \\
-        Bias stability (negative FB)  & None  & \textbf{Strong} & Moderate \\
-        Component count               & 8     & 9     & 10 \\
-        Score: Power efficiency        & 2     & \textbf{3}     & 1 \\
-        Score: Thermal management      & 2     & \textbf{3}     & 1 \\
-        Score: Component economy       & \textbf{3}     & 2     & 1 \\
-        Score: Bias stability          & 1     & \textbf{3}     & 2 \\
-        \textbf{Total Score (out of 12)} & \textbf{8} & \textbf{11} & \textbf{5} \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:sustainability}
-\end{table}
 
 \subsection*{5.3 Conclusion}
 \addcontentsline{toc}{subsection}{5.3 Conclusion}
 
 This study compared three CE amplifier configurations --- passive resistive (A), emitter degeneration (B), and active loading (C) --- through theoretical derivation, computer-aided metric-polygon simulation, and PSpice verification.
 
-\paragraph{Key findings.}
 \begin{enumerate}
-    \item \textbf{No single circuit excels in all metrics.}
-    Every improvement in one performance parameter (e.g.\ higher gain in Circuit A or C) comes at a cost elsewhere (lower bandwidth, lower input impedance, or higher power).
-    This is the fundamental trade-off encoded in the performance metric polygons.
+    \item From the analysis above, it can be seen that from a purely sustainability standpoint, \textbf{Circuit B is the most sustainable design} because it draws the least power, provides strong thermal stability, while just adding one additional resistor compared to Circuit A.
 
-    \item \textbf{Circuit B (Emitter Degeneration) is the most sustainable design.}
-    It achieves a \textbf{50\% reduction in quiescent current} ($I_C = 2.151\,\text{mA}$ vs.\ 4.278\,mA for Circuit A), saving approximately \textbf{21.3\,mW} of supply power.
-    It also provides strong thermal bias stability through emitter-degeneration negative feedback, improving long-term reliability with only one additional resistor over Circuit A.
-    The trade-off is a reduced voltage gain --- but this is controllable through the ratio $R_{E1} / R_{E2}$.
+    \item \textbf{Circuit C delivers the best performance} in terms of voltage gain and voltage swing, while having the lowest output impedance, but at the highest power and complexity cost. Circuit C is best suited for high-performance IC where power is not the primary constraint.
 
-    \item \textbf{Circuit C (Active Loading) delivers the best signal performance} (highest voltage gain, best output voltage swing at $V_{CE} = 5.664\,\text{V}$, lowest output impedance), but at the highest power cost.
-    The mirror current through Q3 alone ($I_{C3} \approx 8.578\,\text{mA}$) exceeds the entire collector current of Circuit B.
-    Circuit C is best suited for high-performance integrated circuits where power is not the primary constraint.
-
-    \item \textbf{Circuit A is the simplest baseline.}
-    It provides the best gain-per-component with the fewest parts, but offers no thermal self-stabilisation and operates at the lowest $V_{CE}$ headroom, making it vulnerable to clipping and temperature drift.
+    \item \textbf{Circuit A is the simplest baseline}. It provides the best gain with the fewest parts, but offers low thermal stability and operates at the lowest voltage swing, making it hard to operate at various voltages.
 \end{enumerate}
-
-\paragraph{Sustainable design recommendation.}
-For applications where energy efficiency matters --- such as battery-powered devices, IoT sensors, or any system run for long hours --- \textbf{Circuit B (Emitter Degeneration) is the recommended topology}.
-The emitter degeneration technique is a practical, low-cost strategy that reduces power consumption, improves stability, and extends component lifetime, all of which contribute to a more sustainable electronic product lifecycle.
-If higher gain is required, one should increase the bypass capacitor $C_E$ or increase $R_{E2}$ relative to $R_{E1}$ to recover gain without significantly increasing power draw, rather than switching to an active-load topology.
-
-In summary, the analysis demonstrates that thoughtful selection and tuning of circuit topology --- guided by the performance trade-off polygon --- is a powerful tool for the sustainable design of analog amplifier circuits.
 
 \section*{Appendix}
 \addcontentsline{toc}{section}{Appendix}
 
-Attached herewith are all the source files, draft files, actual screenshots from PSpice graphs, and more:
-
+\begin{itemize}
+    \item \href{https://github.com/LimWeiJen/EC-assignment/tree/main/pspice%20simulation}{\textbf{PSpice files (.cir, .lib, .op, .tran, .ac)}}
+    \item \href{https://github.com/LimWeiJen/EC-assignment/tree/main/pspice%20simulation%20images}{\textbf{All screenshots from PSpice graphs}}
+    \item \href{https://github.com/LimWeiJen/EC-assignment/tree/main/matlab%20plotting%20result}{\textbf{Matlab code to convert PSpice data points into clearer, more readable Matlab graphs}}
+    \item \href{https://github.com/LimWeiJen/EC-assignment/tree/main/simulation%20website}{\textbf{Metric Polygon Simulation Website source code}}
+    \item \href{https://github.com/LimWeiJen/EC-assignment/blob/main/report.tex}{\textbf{Latex source file for this report}}
+    \item \textbf{Raw hand written calculation for this report}
+\end{itemize}
 
 \end{document}
