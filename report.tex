@@ -134,11 +134,10 @@
         \vspace{1em}
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{image.png}
+            \includegraphics[angle=90, width=13cm]{image.png}
             \label{fig:assessment_rubric}
         \end{figure}
     \end{center}
-
 \end{titlepage}
 
 %----------------------------------------------------------------------------------------
@@ -1214,33 +1213,43 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring)
-    \node[extNode] (vcc)  at (60:5.8cm)  {$V_{CC}$};
-    \node[extNode] (vt)   at (110:5.8cm) {$V_T$};
-    \node[extNode] (r1)   at (160:5.8cm) {$R_1$};
-    \node[extNode] (rc)   at (210:5.8cm) {$R_C$};
-    \node[extNode] (re)   at (260:5.8cm) {$R_E$};
-    \node[extNode] (ce)   at (310:5.8cm) {$C_E$};
-    \node[extNode] (beta) at (10:5.8cm)  {$\beta$};
+    % External Nodes (Outer Ring) -- 12 variables, spaced 30 degrees apart
+    \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
+    \node[extNode] (vbe)  at (60:5.8cm)  {$V_{BE}$};
+    \node[extNode] (vt)   at (30:5.8cm)  {$V_T$};
+    \node[extNode] (beta) at (0:5.8cm)   {$\beta$};
+    \node[extNode] (r1)   at (330:5.8cm) {$R_1$};
+    \node[extNode] (r2)   at (300:5.8cm) {$R_2$};
+    \node[extNode] (rc)   at (270:5.8cm) {$R_C$};
+    \node[extNode] (re)   at (240:5.8cm) {$R_E$};
+    \node[extNode] (rl)   at (210:5.8cm) {$R_L$};
+    \node[extNode] (cin)  at (180:5.8cm) {$C_{in}$};
+    \node[extNode] (cc)   at (150:5.8cm) {$C_C$};
+    \node[extNode] (ce)   at (120:5.8cm) {$C_E$};
 
     % Relationships (Routing through Core Currents)
-    % External -> Core
+    % External -> Core (via IC being the central driver)
     \draw[directRel] (vcc) to (ic);
-    \draw[tradeRel, bend right=10]  (r1) to (ib);
-    \draw[tradeRel]  (re) to (ie);
+    \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
     \draw[tradeRel, bend left=15]   (beta) to (ib);
-    
+    \draw[tradeRel, bend right=10]  (r1) to (ib);
+    \draw[directRel, bend left=10]  (r2) to (ic);
+    \draw[tradeRel]  (re) to (ie);
+
     % Core -> Performance
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
     \draw[directRel] (ic) to (vswing);
     \draw[tradeRel]  (ib) to (zin);
-    
-    % External -> Performance (Direct bypasses where current isn't main driver)
+
+    % External -> Performance (Direct, where current isn't main driver)
     \draw[directRel, bend right=10] (vt) to (bw);
     \draw[directRel, bend right=15] (rc) to (zout);
+    \draw[tradeRel, bend left=15]   (rl) to (av);
+    \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
+    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
@@ -1284,33 +1293,45 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring) - Includes R_E1 instead of R_E
-    \node[extNode] (vcc)  at (60:5.8cm)  {$V_{CC}$};
-    \node[extNode] (vt)   at (110:5.8cm) {$V_T$};
-    \node[extNode] (r1)   at (160:5.8cm) {$R_1$};
-    \node[extNode] (rc)   at (210:5.8cm) {$R_C$};
-    \node[extNode] (re1)  at (260:5.8cm) {$R_{E1}$};
-    \node[extNode] (ce)   at (310:5.8cm) {$C_E$};
-    \node[extNode] (beta) at (10:5.8cm)  {$\beta$};
+    % External Nodes (Outer Ring) -- 13 variables for Circuit B, spaced ~27.7 degrees
+    \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
+    \node[extNode] (vbe)  at (62:5.8cm)  {$V_{BE}$};
+    \node[extNode] (vt)   at (34:5.8cm)  {$V_T$};
+    \node[extNode] (beta) at (6:5.8cm)   {$\beta$};
+    \node[extNode] (r1)   at (338:5.8cm) {$R_1$};
+    \node[extNode] (r2)   at (310:5.8cm) {$R_2$};
+    \node[extNode] (rc)   at (282:5.8cm) {$R_C$};
+    \node[extNode] (re1)  at (254:5.8cm) {$R_{E1}$};
+    \node[extNode] (re2)  at (226:5.8cm) {$R_{E2}$};
+    \node[extNode] (rl)   at (198:5.8cm) {$R_L$};
+    \node[extNode] (cin)  at (170:5.8cm) {$C_{in}$};
+    \node[extNode] (cc)   at (142:5.8cm) {$C_C$};
+    \node[extNode] (ce)   at (118:5.8cm) {$C_E$};
 
-    % Relationships 
+    % Relationships
     \draw[directRel] (vcc) to (ic);
-    \draw[tradeRel, bend right=10]  (r1) to (ib);
-    \draw[tradeRel]  (re1) to (ie);
+    \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
     \draw[tradeRel, bend left=15]   (beta) to (ib);
-    
+    \draw[tradeRel, bend right=10]  (r1) to (ib);
+    \draw[directRel, bend left=10]  (r2) to (ic);
+    \draw[tradeRel]  (re1) to (ie);
+    \draw[tradeRel]  (re2) to (ie);
+
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
     \draw[directRel] (ic) to (vswing);
     \draw[tradeRel]  (ib) to (zin);
-    
+
     % Circuit B Unique: R1 inversely affects BW
-    \draw[tradeRel, bend left=25]   (r1) to (bw); 
+    \draw[tradeRel, bend left=25]  (r1) to (bw);
 
     \draw[directRel, bend right=10] (vt) to (bw);
     \draw[directRel, bend right=15] (rc) to (zout);
+    \draw[tradeRel, bend left=15]   (rl) to (av);
+    \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
+    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
@@ -1354,32 +1375,43 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring)
-    \node[extNode] (vcc)  at (60:5.8cm)  {$V_{CC}$};
-    \node[extNode] (vt)   at (110:5.8cm) {$V_T$};
-    \node[extNode] (r1)   at (160:5.8cm) {$R_1$};
-    \node[extNode] (rc)   at (210:5.8cm) {$R_C$};
-    \node[extNode] (re)   at (260:5.8cm) {$R_E$};
-    \node[extNode] (ce)   at (310:5.8cm) {$C_E$};
-    \node[extNode] (beta) at (10:5.8cm)  {$\beta$};
+    % External Nodes (Outer Ring) -- 12 variables for Circuit C, spaced 30 degrees apart
+    \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
+    \node[extNode] (vbe)  at (60:5.8cm)  {$V_{BE}$};
+    \node[extNode] (vt)   at (30:5.8cm)  {$V_T$};
+    \node[extNode] (beta) at (0:5.8cm)   {$\beta$};
+    \node[extNode] (r1)   at (330:5.8cm) {$R_1$};
+    \node[extNode] (r2)   at (300:5.8cm) {$R_2$};
+    \node[extNode] (r3)   at (270:5.8cm) {$R_3$};
+    \node[extNode] (re)   at (240:5.8cm) {$R_E$};
+    \node[extNode] (rl)   at (210:5.8cm) {$R_L$};
+    \node[extNode] (cin)  at (180:5.8cm) {$C_{in}$};
+    \node[extNode] (cc)   at (150:5.8cm) {$C_C$};
+    \node[extNode] (ce)   at (120:5.8cm) {$C_E$};
 
-    % Relationships 
+    % Relationships
     \draw[directRel] (vcc) to (ic);
-    \draw[tradeRel, bend right=10]  (r1) to (ib);
-    \draw[tradeRel]  (re) to (ie);
+    \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
     \draw[tradeRel, bend left=15]   (beta) to (ib);
-    
+    \draw[tradeRel, bend right=10]  (r1) to (ib);
+    \draw[directRel, bend left=10]  (r2) to (ic);
+    \draw[tradeRel]  (re) to (ie);
+    % R3 is the current mirror reference: sets mirror current (no direct row in table)
+
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
     \draw[tradeRel]  (ib) to (zin);
-    
+
     % Circuit C Unique: V_CC inversely affects V_swing
     \draw[tradeRel, bend left=45] (vcc) to (vswing);
-    % R_C has NO effect in Circuit C (no arrows connected to it)
+    % R_C (R3 used as reference, no R_C in Circuit C) has NO effect on output
 
     \draw[directRel, bend right=10] (vt) to (bw);
+    \draw[tradeRel, bend left=15]   (rl) to (av);
+    \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
+    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
