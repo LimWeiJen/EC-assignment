@@ -407,7 +407,7 @@ From research, voltage swing is just the peak-to-peak output voltage. But in ord
 
 Then, from research, the peak output voltage $v_{out}$ is given as:
 \[
-v_{out} = \min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}
+v_{out} = \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right|
 \]
 
 And since our voltage swing is the peak to peak, we will have to multiply $v_{out}$ by 2:
@@ -625,10 +625,10 @@ The following is the analysis strategy for the current report.
     & = V_{CC} (\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times \beta) \\ \\
     V_{C(sat)} &= V_{CC} \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C} \\
     V_{C(cutoff)} &= V_{CC}\\
-    v_{out} &= \min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE} \textbf{ [from research]}\\
+    v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right| \textbf{ [from research]}\\
     V_{swing} &= 2v_{out} \textbf{ [from research]}\\
-    &= 2\Big[V_{CC} \min \Big(1, \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C}\Big) \\
-    &\qquad - \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta R_C + (\beta + 1) R_E)\Big)\Big]
+    &= 2\left|V_{CC} \min \Big(1, \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C}\Big) \right.\\
+    &\qquad \left.- \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta R_C + (\beta + 1) R_E)\Big)\right|
 \end{align*}
 
 \subsection*{Circuit B: Emitter Degeneration Loading}
@@ -671,10 +671,10 @@ The following is the analysis strategy for the current report.
     & = V_{CC} (\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times \beta) \\ \\
     V_{C(sat)} &= V_{CC} \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C} \\
     V_{C(cutoff)} &= V_{CC}\\
-    v_{out} &= \min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE} \textbf{ [from research]}\\
+    v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right| \textbf{ [from research]}\\
     V_{swing} &= 2v_{out} \textbf{ [from research]}\\
-    &= 2\Big[V_{CC} \min \Big(1, \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C}\Big) \\
-    &\qquad - \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta R_C + (\beta + 1) (R_{E1}+R_{E2}))\Big)\Big]
+    &= 2\left|V_{CC} \min \Big(1, \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C}\Big) \right.\\
+    &\qquad \left.- \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta R_C + (\beta + 1) (R_{E1}+R_{E2}))\Big)\right|
 \end{align*}
 
 \subsection*{Circuit C: Active Loading}
@@ -735,10 +735,10 @@ The following is the analysis strategy for the current report.
 V_{C(sat)} &= I_E R_E\\
  &= \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\\
  V_{C(cutoff)} &= V_{CC} - V_{BE}\\
- v_{out} &= \min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\\
+ v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right|\\
  v_{swing} &= 2v_{out}\\
- &= 2\Big(\min\Big(\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E, V_{CC} - V_{BE}\Big) \\
- &\qquad - V_{CC} - V_{BE} - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\Big)
+ &= 2\left|\min\Big(\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E, V_{CC} - V_{BE}\Big) \right.\\
+ &\qquad \left.- V_{CC} - V_{BE} - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\right|
 \end{align*}
 
 \newpage
