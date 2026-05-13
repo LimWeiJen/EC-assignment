@@ -407,7 +407,7 @@ From research, voltage swing is just the peak-to-peak output voltage. But in ord
 
 Then, from research, the peak output voltage $v_{out}$ is given as:
 \[
-v_{out} = \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right|
+v_{out} = \min\!\left(\left|V_{CE} - V_{C(sat)}\right|,\; \left|V_{C(cutoff)} - V_{CE}\right|\right)
 \]
 
 And since our voltage swing is the peak to peak, we will have to multiply $v_{out}$ by 2:
@@ -429,7 +429,7 @@ where $f_H$ is the \textbf{upper} ($-3\,\text{dB}$) cutoff frequency and $f_L$ i
 
 \subsubsection*{Lower Cutoff Frequency $f_L$}
 
-Theoretically, $f_L$ is determined as the highest frequency from all the available capacitors in the circuit ($C_{in}$, $C_C$, $C_E$). Recall the formula for the frequency of capacitors.
+Theoretically, $f_L$ is determined by the sum of all pole frequencies from the available capacitors in the circuit ($C_{in}$, $C_C$, $C_E$). Recall the formula for the frequency of capacitors.
 \[
     f_c = \frac{1}{2\pi Z_C}
 \]
@@ -438,7 +438,7 @@ There are three such capacitors in the circuit:
     f_{c_{in}} &= \frac{1}{2\pi C_{in} \cdot Z_{in}} & \text{(input coupling pole)} \\
     f_{c_C}    &= \frac{1}{2\pi C_C \cdot Z_{C}}      & \text{(output coupling pole)} \\
     f_{c_E}    &= \frac{1}{2\pi C_E \cdot Z_{E}}         & \text{(emitter bypass pole)} \\ \\
-    f_L &= \max(f_{c_{in}}, f_{c_C}, f_{c_E})
+    f_L &= f_{c_{in}} + f_{c_C} + f_{c_E}
 \end{align*}
 
 \subsubsection*{Upper Cutoff Frequency $f_H$}
@@ -625,10 +625,18 @@ The following is the analysis strategy for the current report.
     & = V_{CC} (\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times \beta) \\ \\
     V_{C(sat)} &= V_{CC} \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C} \\
     V_{C(cutoff)} &= V_{CC}\\
-    v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right| \textbf{ [from research]}\\
+    v_{out} &= \min\!\left(\left|V_{CE} - V_{C(sat)}\right|,\; \left|V_{C(cutoff)} - V_{CE}\right|\right) \textbf{ [from research]}\\
     V_{swing} &= 2v_{out} \textbf{ [from research]}\\
-    &= 2\left|V_{CC} \min \Big(1, \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C}\Big) \right.\\
-    &\qquad \left.- \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta R_C + (\beta + 1) R_E)\Big)\right|
+    &= 2\min\Bigg(
+    \left|\vphantom{\frac{A}{B}}
+        \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E}
+        \times (\beta R_C + (\beta + 1) R_E)\Big)\right.\\
+    &\qquad\qquad\qquad\qquad\qquad
+        \left.- V_{CC} \frac{R_2 \parallel R_E}{R_2 \parallel R_E + R_1 \parallel R_C}\right|, \\
+    &\qquad\qquad\qquad \left|V_{CC} - \Big(V_{CC}
+        - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E}
+        \times (\beta R_C + (\beta + 1) R_E)\Big)\right|
+    \Bigg)
 \end{align*}
 
 \subsection*{Circuit B: Emitter Degeneration Loading}
@@ -671,10 +679,18 @@ The following is the analysis strategy for the current report.
     & = V_{CC} (\frac{V_{CC}}{R_1 + R_2} + \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times \beta) \\ \\
     V_{C(sat)} &= V_{CC} \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C} \\
     V_{C(cutoff)} &= V_{CC}\\
-    v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right| \textbf{ [from research]}\\
+    v_{out} &= \min\!\left(\left|V_{CE} - V_{C(sat)}\right|,\; \left|V_{C(cutoff)} - V_{CE}\right|\right) \textbf{ [from research]}\\
     V_{swing} &= 2v_{out} \textbf{ [from research]}\\
-    &= 2\left|V_{CC} \min \Big(1, \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C}\Big) \right.\\
-    &\qquad \left.- \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta R_C + (\beta + 1) (R_{E1}+R_{E2}))\Big)\right|
+    &= 2\min\Bigg(
+    \left|\vphantom{\frac{A}{B}}
+        \Big(V_{CC} - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})}
+        \times (\beta R_C + (\beta + 1)(R_{E1}+R_{E2}))\Big)\right.\\
+    &\qquad\qquad\qquad\qquad\qquad
+        \left.- V_{CC} \frac{R_2 \parallel (R_{E1}+R_{E2})}{R_2 \parallel (R_{E1}+R_{E2}) + R_1 \parallel R_C}\right|, \\
+    &\qquad\qquad\qquad \left|V_{CC} - \Big(V_{CC}
+        - \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})}
+        \times (\beta R_C + (\beta + 1)(R_{E1}+R_{E2}))\Big)\right|
+    \Bigg)
 \end{align*}
 
 \subsection*{Circuit C: Active Loading}
@@ -735,10 +751,21 @@ The following is the analysis strategy for the current report.
 V_{C(sat)} &= I_E R_E\\
  &= \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\\
  V_{C(cutoff)} &= V_{CC} - V_{BE}\\
- v_{out} &= \left|\min(V_{C(sat)}, V_{C(cutoff)}) - V_{CE}\right|\\
+ v_{out} &= \min\!\left(\left|V_{CE} - V_{C(sat)}\right|,\; \left|V_{C(cutoff)} - V_{CE}\right|\right)\\
  v_{swing} &= 2v_{out}\\
- &= 2\left|\min\Big(\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E, V_{CC} - V_{BE}\Big) \right.\\
- &\qquad \left.- V_{CC} - V_{BE} - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \times R_E\right|
+ &= 2\min\Bigg(
+ \left|\vphantom{\frac{A}{B}}
+     \Big(V_{CC} - V_{BE}
+     - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E}
+     \times (\beta + 1) \times R_E\Big)\right.\\
+ &\qquad\qquad\qquad\qquad
+     \left.- \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E}
+     \times (\beta + 1) \times R_E\right|, \\
+ &\qquad\qquad\quad \left|(V_{CC} - V_{BE})
+     - \Big(V_{CC} - V_{BE}
+     - \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E}
+     \times (\beta + 1) \times R_E\Big)\right|
+ \Bigg)
 \end{align*}
 
 \newpage
@@ -764,11 +791,17 @@ V_{C(sat)} &= I_E R_E\\
     % Dependent current source (drawn right-to-left so the arrow points left)
     \draw (7.5,0) to[cI, l=$\alpha i_e$] (4.5,0);
     
-    % Third vertical branch (Rc || RL)
-    \draw (7.5,0) to[R, l=$R_c||R_L$] (7.5,-3) node[ground]{};
+    % Third vertical branch (Rc)
+    \draw (7.5,0) to[R, l=$R_c$] (7.5,-3) node[ground]{};
+    
+    % Wire extending to RL
+    \draw (7.5,0) to[short, *-] (9.5,0);
+    
+    % Fourth vertical branch (RL)
+    \draw (9.5,0) to[R, l=$R_L$] (9.5,-3) node[ground]{};
     
     % Output terminal
-    \draw (7.5,0) to[short, *-*] (9,0) node[above right]{$v_{out}$};
+    \draw (9.5,0) to[short, *-*] (11,0) node[above right]{$v_{out}$};
     
 \end{circuitikz}
 
@@ -779,7 +812,7 @@ A_v &= \frac{V_{out}}{V_{in}}\\
  &= -\frac{\alpha}{r_e}(R_C \parallel R_L)\\
  &= -\frac{\alpha (R_C \parallel R_L)(I_E)}{V_T}\\
  &= -\frac{\alpha (R_C \parallel R_L)}{V_T} \times \frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)\\ \\
- Z_{out} &= R_C \parallel R_L \\
+ Z_{out} &= R_C \\
  Z_{in} &= \frac{V_{in}}{i_b} \\
  &= \frac{V_{in}}{(\frac{1}{1+\beta})i_e}\\
  &= (1+\beta)r_e\\
@@ -787,14 +820,14 @@ A_v &= \frac{V_{out}}{V_{in}}\\
  & = (1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}\\
  & = \frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}R_2/(R_1+R_2)-V_{BE}}\\ \\
 BW &= f_H - f_L \textbf{ [from research]}\\
-f_L &= \max(f_{c_{in}}, f_{c_C}, f_{c_E}) \textbf{ [from research]}\\
+f_L &= f_{c_{in}} + f_{c_C} + f_{c_E} \textbf{ [from research]}\\
 X_{C_{in}} &= -\frac{1}{2\pi f_{c_{in}} C_{in}}\\ 
 f_{c_{in}} &= \frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}\\ 
 f_{c_C} &= \frac{1}{2\pi C_C (R_C + R_L)}\\ 
 f_{c_E} &= \frac{1}{2\pi C_E (r_e)}\\
 &= \frac{I_E}{2\pi V_T C_E}\\
 &= \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E}\\
-f_L &= \max(\frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}, \frac{1}{2\pi C_C (R_C + R_L)}, \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E})\\ \\
+f_L &= \frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})} + \frac{1}{2\pi C_C (R_C + R_L)} + \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E}\\ \\
 C_{Mi} &= C_\mu (1 - A_v)\\*
 &= C_\mu \left(1 + \frac{\alpha}{r_e}(R_C \parallel R_L)\right)\\
 C_{Mo} &= C_\mu \left(1 - \frac{1}{A_v}\right)\\
@@ -823,10 +856,10 @@ BW &= f_H - f_L\\
 &\qquad\qquad\qquad \times \frac{1}{\left(C_\pi + C_\mu \left(1 + \frac{\alpha}{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}(R_C \parallel R_L)\right)\right)}, \\
 &\qquad \frac{1}{2\pi (R_C \parallel R_L) C_\mu \left(1 + \frac{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}{\alpha(R_C \parallel R_L)}\right)}
 \Bigg) \\
-&\qquad - \max\Bigg(
-    \frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})}, \\
-&\qquad\qquad\qquad \frac{1}{2\pi C_C (R_C + R_L)}, \\
-&\qquad\qquad\qquad \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E}
+&\qquad - \Bigg(
+    \frac{1}{2\pi C_{in} ((1+\beta)\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)})} \\
+&\qquad\qquad\qquad + \frac{1}{2\pi C_C (R_C + R_L)} \\
+&\qquad\qquad\qquad + \frac{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)R_E} \times (\beta + 1)}{2\pi V_T C_E}
 \Bigg)
 \end{align*}
 
@@ -844,16 +877,22 @@ BW &= f_H - f_L\\
     \draw (2,0) to[short, i=$i_b$] (4.5,0);
     
     % Second vertical branch (re)
-    \draw (4.5,0) to[R, l=$r_e + R_{E1}$, i=$i_e$] (4.5,-3) node[ground]{};
+    \draw (4.5,0) to[R, l=$r_e+R_{E1}$, i=$i_e$] (4.5,-3) node[ground]{};
     
     % Dependent current source (drawn right-to-left so the arrow points left)
     \draw (7.5,0) to[cI, l=$\alpha i_e$] (4.5,0);
     
-    % Third vertical branch (Rc || RL)
-    \draw (7.5,0) to[R, l=$R_c||R_L$] (7.5,-3) node[ground]{};
+    % Third vertical branch (Rc)
+    \draw (7.5,0) to[R, l=$R_c$] (7.5,-3) node[ground]{};
+    
+    % Wire extending to RL
+    \draw (7.5,0) to[short, *-] (9.5,0);
+    
+    % Fourth vertical branch (RL)
+    \draw (9.5,0) to[R, l=$R_L$] (9.5,-3) node[ground]{};
     
     % Output terminal
-    \draw (7.5,0) to[short, *-*] (9,0) node[above right]{$v_{out}$};
+    \draw (9.5,0) to[short, *-*] (11,0) node[above right]{$v_{out}$};
     
 \end{circuitikz}
 
@@ -864,17 +903,17 @@ BW &= f_H - f_L\\
     &= -\frac{\alpha}{(r_e+R_{E1})}(R_C \parallel R_L)\\
     &= -\frac{\alpha}{\frac{V_T}{I_E}+R_{E1}}(R_C \parallel R_L)\\
     &= -\frac{\alpha}{\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)}+R_{E1}}(R_C \parallel R_L)\\ \\
- Z_{out} &= R_C \parallel R_L \\
+ Z_{out} &= R_C \\
  Z_{in} &= \frac{V_{in}}{i_b} \\
  &= \frac{V_{in}}{(\frac{1}{1+\beta})i_e}\\
  & = (1+\beta) (r_e + R_{E1})\\
  & = (1+\beta) (\frac{V_T}{I_E} + R_{E1})\\
  & = (1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1})\\ \\
-f_L &= \max(f_{c_{in}}, f_{c_C}, f_{c_E}) \textbf{ [from research]}\\
+f_L &= f_{c_{in}} + f_{c_C} + f_{c_E} \textbf{ [from research]}\\
 f_{c_{in}} &= \frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))}\\
 f_{c_C} &= \frac{1}{2\pi C_C (R_C + R_L)}\\
 f_{c_E} &= \frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)}\\
-f_L &= \max(\frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))},\\ &\frac{1}{2\pi C_C (R_C + R_L)},\\ &\frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)}) \\ \\
+f_L &= \frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))}\\ &\quad + \frac{1}{2\pi C_C (R_C + R_L)}\\ &\quad + \frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)} \\ \\
 C_{Mi} &= C_\mu (1 - A_v)\\
 &= C_\mu \left(1 + \frac{\alpha(R_C \parallel R_L)}{r_e + R_{E1}}\right)\\
 C_{Mo} &= C_\mu \left(1 - \frac{1}{A_v}\right)\\
@@ -902,10 +941,10 @@ BW &= f_H - f_L\\
 &\qquad\qquad\qquad \times \frac{1}{(C_\pi + C_\mu \left(1 + \frac{\alpha(R_C \parallel R_L)}{r_e + R_{E1}}\right))}, \\
 &\qquad \frac{1}{2\pi R_{th(out)} (C_\mu \left(1 + \frac{(\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)}) + R_{E1}}{\alpha(R_C \parallel R_L)}\right))}
 \Bigg) \\
-&\qquad - \max\Bigg(
-    \frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))}, \\
-&\qquad\qquad\qquad \frac{1}{2\pi C_C (R_C + R_L)}, \\
-&\qquad\qquad\qquad \frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)}
+&\qquad - \Bigg(
+    \frac{1}{2\pi C_{in} ((1+\beta) (\frac{V_T}{\frac{V_{CC}R_2/(R_1+R_2)-V_{BE}}{R_1 \parallel R_2 + (1+\beta)(R_{E1}+R_{E2})} \times (\beta + 1)} + R_{E1}))} \\
+&\qquad\qquad\qquad + \frac{1}{2\pi C_C (R_C + R_L)} \\
+&\qquad\qquad\qquad + \frac{1}{2\pi C_E \left(R_{E2} \parallel \left(R_{E1} + r_e + \frac{R_1 \parallel R_2}{1+\beta}\right)\right)}
 \Bigg)
 \end{align*}
 
@@ -983,8 +1022,8 @@ f_{c_{in}} &= \frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)
 f_{c_C} &= \frac{1}{2\pi C_C (R_L)}\\
 f_{c_E} &= \frac{1}{2\pi C_E (R_E \parallel r_e)} \\
 &= \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))} \\
-f_L &= \max(f_{c_{in}}, f_{c_C}, f_{c_E}) \textbf{ [from research]}\\
-&= \max(\frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})}, \frac{1}{2\pi C_C (R_L)}, \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))})\\ \\
+f_L &= f_{c_{in}} + f_{c_C} + f_{c_E} \textbf{ [from research]}\\
+&= \frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})} + \frac{1}{2\pi C_C (R_L)} + \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))}\\ \\
 C_{Mi} &= C_{\mu1} (1 - A_v)\\
 &= C_{\mu1} \left(1 + \frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \right)\\
 C_{Mo} &= C_{\mu1} \left(1 - \frac{1}{A_v}\right)\\
@@ -1005,10 +1044,10 @@ BW &= f_H - f_L\\
 &\qquad\qquad\qquad \times \frac{1}{(C_{\pi1} + (C_{\mu1} \left(1 + \frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1) \right)))}, \\
 &\qquad \frac{1}{2\pi R_L (C_{\mu1} \left(1 - \frac{1}{(-\frac{\alpha R_L}{V_T} \times \frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1))}\right) + C_{\mu2})}
 \Bigg) \\
-&\qquad - \max\Bigg(
-    \frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})}, \\
-&\qquad\qquad\qquad \frac{1}{2\pi C_C (R_L)}, \\
-&\qquad\qquad\qquad \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))}
+&\qquad - \Bigg(
+    \frac{1}{2\pi C_{in} (\frac{V_T (R_1 \parallel R_2 + (1+\beta)R_E)}{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}})} \\
+&\qquad\qquad\qquad + \frac{1}{2\pi C_C (R_L)} \\
+&\qquad\qquad\qquad + \frac{1}{2\pi C_E (R_E \parallel (\frac{V_T}{\frac{V_{CC}\frac{R_2}{R_1+R_2}-V_{BE}}{R_1 \parallel R_2 + (\beta+1)R_E} \times (\beta + 1)}))}
 \Bigg)
 \end{align*}
 
@@ -1068,7 +1107,7 @@ Based on the equations derived above, a simulation website is created to analyze
 
 The sidebars on the left are modifiable variables that are used to control the output properties, while the lines connecting the output properties illustrates which properties are corelated, and whether if they are related in the same/opposite direction. (Green line means they increase together, Red line means when one increase, the other decrease).
 
-The website that are used to obtain the Metric Polygon can be accessed via the following \href{https://ec-assignment-simulation.netlify.app/}{link}
+The website that are used to obtain the Metric Polygon can be accessed via the following \href{https://ec-assignment-simulation-by-limweijen.netlify.app/}{link}
 
 The following is the text-based finding of the Metric Polygon, which is used to create the final performance trade-off polygon:
 
@@ -1092,82 +1131,82 @@ The following is the text-based finding of the Metric Polygon, which is used to 
 \endfoot
     \bottomrule
 \endlastfoot
-    $V_{CC} \downarrow$ 
-    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
-    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
-    & C & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    $V_{CC} \uparrow$
+    & A & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    & B & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    & C & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
     \midrule
-    $V_{BE} \uparrow$ 
-    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
-    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    $V_{BE} \uparrow$
+    & A & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     & C & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     \midrule
-    $V_T \downarrow$ 
-    & A & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
-    & B & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
-    & C & -- & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & -- & -- & -- \\
+    $V_T \uparrow$
+    & A & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
+    & B & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
+    & C & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
     \midrule
-    $\beta \uparrow$ 
-    & A & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
-    & B & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
-    & C & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    $\beta \uparrow$
+    & A & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    & B & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+    & C & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
     \midrule
-    $R_1 \uparrow$ 
-    & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
-    & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\downarrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
-    & C & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    $R_1 \uparrow$
+    & A & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & B & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     \midrule
-    $R_2 \uparrow$ 
+    $R_2 \uparrow$
     & A & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
     & B & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
-    & C & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
+    & C & $\uparrow$ & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ \\
     \midrule
-    $R_C \uparrow$ 
+    $R_C \uparrow$
     & A & -- & $\uparrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
     & B & -- & $\uparrow$ & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
     & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
     \midrule
-    $R_E \uparrow$ 
+    $R_E \uparrow$
     & A & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    & C & $\downarrow$ & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+    & C & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     \midrule
-    $R_{E1} \uparrow$ 
+    $R_{E1} \uparrow$
     & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
     & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
     \midrule
-    $R_{E2} \uparrow$ 
+    $R_{E2} \uparrow$
     & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
     & B & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
     \midrule
-    $R_L \uparrow$ 
+    $R_L \uparrow$
     & A & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
     & B & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
     & C & -- & -- & $\downarrow$ & $\downarrow$ & -- & $\uparrow$ & -- & -- & -- \\
     \midrule
-    $C_{in} \uparrow$ 
-    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    \midrule
-    $C_C \uparrow$ 
-    & A & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    & B & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    & C & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-    \midrule
-    $C_E \uparrow$ 
+    $C_{in} \uparrow$
     & A & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
     & B & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
     & C & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
     \midrule
-    $C_\pi \uparrow$ 
+    $C_C \uparrow$
+    & A & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_E \uparrow$
+    & A & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & B & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    & C & -- & -- & -- & $\uparrow$ & -- & -- & -- & -- & -- \\
+    \midrule
+    $C_\pi \uparrow$
     & A & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
     & B & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
     & C & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
     \midrule
-    $C_\mu \uparrow$ 
+    $C_\mu \uparrow$
     & A & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
     & B & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
     & C & -- & -- & -- & $\downarrow$ & -- & -- & -- & -- & -- \\
@@ -1240,7 +1279,7 @@ Based on the analysis from the simulation above, certain relationships between v
     % Core -> Performance
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
-    \draw[directRel] (ic) to (vswing);
+    \draw[tradeRel]  (ic) to (vswing);  % IC up -> Vswing down (VCC increases both IC and lowers Vswing)
     \draw[tradeRel]  (ib) to (zin);
 
     % External -> Performance (Direct, where current isn't main driver)
@@ -1249,7 +1288,8 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
+    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
+    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
@@ -1320,7 +1360,7 @@ Based on the analysis from the simulation above, certain relationships between v
 
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
-    \draw[directRel] (ic) to (vswing);
+    \draw[tradeRel]  (ic) to (vswing);  % IC up -> Vswing down
     \draw[tradeRel]  (ib) to (zin);
 
     % Circuit B Unique: R1 inversely affects BW
@@ -1331,7 +1371,8 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
+    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
+    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
@@ -1403,15 +1444,18 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[tradeRel]  (ic) to (av);
     \draw[tradeRel]  (ib) to (zin);
 
-    % Circuit C Unique: V_CC inversely affects V_swing
-    \draw[tradeRel, bend left=45] (vcc) to (vswing);
+    % Circuit C Unique: V_CC directly affects V_swing (VCC up -> Vswing up for C)
+    \draw[directRel, bend left=45] (vcc) to (vswing);
+    % Circuit C Unique: R_E directly affects V_swing (RE up -> Vswing up for C)
+    \draw[directRel, bend right=20] (re) to (vswing);
     % R_C (R3 used as reference, no R_C in Circuit C) has NO effect on output
 
     \draw[directRel, bend right=10] (vt) to (bw);
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    % C_in and C_C: no significant effect (all -- in table, nodes shown only)
+    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
+    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
@@ -1672,7 +1716,7 @@ Circuit A achieves high gain because $A_v \approx -\frac{\alpha}{r_e}(R_C \| R_L
 Circuit B intentionally trades gain for stability because of $R_{E1}$, which appears in the denominator of the gain equation, hence reducing the gain. Circuit C replaces $R_C$ with two mirrorred transistors, which had been analyzed to have the effect of driving the voltage gain very high.
 
 \paragraph{Bandwidth:}
-From the analysis, we can see that the higher the gain of the circuit, the lower its bandwidth.
+From the analysis, we can see that the bandwidth can be independently tuned by using $C_{in}, C_C, C_E$. This makes sense because bandwidth in its entirety is just about the allowed frequency of amplification, and the frequency is solely controlled by the frequency of the capacitors.
 
 \paragraph{Input Impedance.}
 $Z_{in} = (1+\beta)r_e$ for Circuit A.
@@ -1686,9 +1730,9 @@ Both Circuit A and Circuit B have the same output impedance, while Circuit C onl
 A few key observations from the metric polygon:
 
 \begin{itemize}
-    \item \textbf{$I_C$ is the central driver:} Changing almost any external variable will change $I_C$, and $I_C$ in turn changes almost all the other external variables. This single observation explains almost all of the trade-off structure seen in all three circuits.
+    \item \textbf{$I_C$ is the central driver:} Changing almost any external variable will change $I_C$, and $I_C$ in turn changes almost all the other performance metric variables. This single observation explains almost all of the trade-off structure seen in all three circuits.
 
-    \item \textbf{$C_E$ is a free parameter for bandwidth.} Increasing $C_E$ improves $BW$ in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$.
+    \item \textbf{$C_E, C_{in}, C_C$ are free parameters for bandwidth.} Increasing $C_E, C_{in}, C_C$ improves $BW$ in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$.
 
     \item \textbf{Circuit B's $R_1$ suppresses $BW$.} In Circuit B, increasing $R_1$ reduces $BW$ (in addition to reducing $I_C$), whereas in Circuit A this effect is absent.
     This is because the larger Th\'{e}venin resistance $R_{TH} = R_1 \| R_2$ interacts with the effective emitter resistance $R_{E1} + r_e$ in the bandwidth calculation.

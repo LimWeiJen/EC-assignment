@@ -798,8 +798,12 @@
             let reA = vt / IeA;
 
             let pA = vcc * (vcc / (r1 + r2) + IcA);
-            let vswingA = 2 * (vcc * Math.min(1, par(r2, re) / (par(r2, re) + par(r1, rc))) - (vcc - IbA * (beta * rc + (beta + 1) * re)));
-            let zinA = vt * (par(r1, r2) + (1 + beta) * re) / (vcc * r2 / (r1 + r2) - vbe);
+            // VCE, Vsat, Vcutoff for Circuit A
+            let VceA = vcc - IbA * (beta * rc + (beta + 1) * re);
+            let VsatA = vcc * par(r2, re) / (par(r2, re) + par(r1, rc));
+            let VcutA = vcc;
+            let vswingA = 2 * Math.min(Math.abs(VceA - VsatA), Math.abs(VcutA - VceA));
+            let zinA = (1 + beta) * reA;
             let zoutA = par(rc, rl);
             let avA = - (alpha * par(rc, rl) / vt) * IeA;
 
@@ -808,7 +812,7 @@
             let fL1A = 1 / (2 * Math.PI * cin * (1 + beta) * reA);
             let fL2A = 1 / (2 * Math.PI * cc * (rc + rl));
             let fL3A = IeA / (2 * Math.PI * vt * ce);
-            let bwA = Math.min(fH1A, fH2A) - Math.max(fL1A, fL2A, fL3A);
+            let bwA = Math.min(fH1A, fH2A) - (fL1A + fL2A + fL3A);
 
             updateMetrics('A', { power: pA, vswing: vswingA, gain: avA, bw: bwA, zin: zinA, zout: zoutA, ib: IbA, ic: IcA, ie: IeA });
 
@@ -819,7 +823,11 @@
             let reB = vt / IeB;
 
             let pB = vcc * (vcc / (r1 + r2) + IcB);
-            let vswingB = 2 * (vcc * Math.min(1, par(r2, re1 + re2) / (par(r2, re1 + re2) + par(r1, rc))) - (vcc - IbB * (beta * rc + (beta + 1) * (re1 + re2))));
+            // VCE, Vsat, Vcutoff for Circuit B
+            let VceB = vcc - IbB * (beta * rc + (beta + 1) * (re1 + re2));
+            let VsatB = vcc * par(r2, re1 + re2) / (par(r2, re1 + re2) + par(r1, rc));
+            let VcutB = vcc;
+            let vswingB = 2 * Math.min(Math.abs(VceB - VsatB), Math.abs(VcutB - VceB));
             let zinB = (1 + beta) * (reB + re1);
             let zoutB = par(rc, rl);
             let avB = - (alpha / (reB + re1)) * par(rc, rl);
@@ -829,7 +837,7 @@
             let fL1B = 1 / (2 * Math.PI * cin * (1 + beta) * (reB + re1));
             let fL2B = 1 / (2 * Math.PI * cc * (rc + rl));
             let fL3B = 1 / (2 * Math.PI * ce * par(re2, re1 + reB + par(r1, r2) / (1 + beta)));
-            let bwB = Math.min(fH1B, fH2B) - Math.max(fL1B, fL2B, fL3B);
+            let bwB = Math.min(fH1B, fH2B) - (fL1B + fL2B + fL3B);
 
             updateMetrics('B', { power: pB, vswing: vswingB, gain: avB, bw: bwB, zin: zinB, zout: zoutB, ib: IbB, ic: IcB, ie: IeB });
 
@@ -840,7 +848,11 @@
             let reC = vt / IeC;
 
             let pC = vcc * (vcc / (r1 + r2) + IbC * 2 * beta);
-            let vswingC = 2 * (Math.min(IeC * re, vcc - vbe) - vcc - vbe - IeC * re);
+            // VCE, Vsat, Vcutoff for Circuit C
+            let VsatC = IeC * re;              // V_C(sat) = I_E * R_E
+            let VcutC = vcc - vbe;             // V_C(cutoff) = V_CC - V_BE
+            let VceC = vcc - vbe - IeC * re;   // V_CE = V_CC - V_BE - I_E*R_E
+            let vswingC = 2 * Math.min(Math.abs(VceC - VsatC), Math.abs(VcutC - VceC));
             let zinC = vt * (par(r1, r2) + (1 + beta) * re) / (vcc * r2 / (r1 + r2) - vbe);
             let zoutC = rl;
             let avC = - (alpha * rl / vt) * IeC;
@@ -850,7 +862,7 @@
             let fL1C = 1 / (2 * Math.PI * cin * zinC);
             let fL2C = 1 / (2 * Math.PI * cc * rl);
             let fL3C = 1 / (2 * Math.PI * ce * par(re, reC));
-            let bwC = Math.min(fH1C, fH2C) - Math.max(fL1C, fL2C, fL3C);
+            let bwC = Math.min(fH1C, fH2C) - (fL1C + fL2C + fL3C);
 
             updateMetrics('C', { power: pC, vswing: vswingC, gain: avC, bw: bwC, zin: zinC, zout: zoutC, ib: IbC, ic: IcC, ie: IeC });
         }

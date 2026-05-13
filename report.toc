@@ -8,24 +8,24 @@
 \contentsline {section}{PART 2: DC/Transient Analysis}{8}{Item.7}%
 \contentsline {subsection}{Circuit A: Passive Resistive Loading}{8}{section*.4}%
 \contentsline {subsection}{Circuit B: Emitter Degeneration Loading}{9}{section*.4}%
-\contentsline {subsection}{Circuit C: Active Loading}{10}{section*.4}%
-\contentsline {section}{PART 3: AC/Transient Analysis}{12}{section*.4}%
-\contentsline {subsection}{Circuit A: Passive Resistive Loading}{12}{section*.5}%
-\contentsline {subsection}{Circuit B: Emitter Degeneration Loading}{14}{section*.5}%
-\contentsline {subsection}{Circuit C: Active Loading}{17}{section*.5}%
-\contentsline {section}{Part 4: Results/Discussion}{19}{section*.5}%
-\contentsline {subsection}{Performance Metric Polygons (Computer-Aided)}{19}{section*.6}%
-\contentsline {subsection}{Performance Trade-Off Polygon}{24}{table.1}%
-\contentsline {subsection}{PSpice Simulation}{27}{table.1}%
-\contentsline {section}{Part 5: Discussion and Conclusion}{40}{figure.caption.35}%
-\contentsline {subsection}{5.1 Discussion}{40}{section*.36}%
-\contentsline {paragraph}{Circuit A: }{40}{table.caption.37}%
-\contentsline {paragraph}{Circuit B}{40}{table.caption.37}%
-\contentsline {paragraph}{Circuit C}{40}{table.caption.37}%
-\contentsline {paragraph}{Voltage Gain:}{41}{table.caption.38}%
-\contentsline {paragraph}{Bandwidth:}{41}{table.caption.38}%
-\contentsline {paragraph}{Input Impedance.}{41}{table.caption.38}%
-\contentsline {paragraph}{Output Impedance:}{41}{table.caption.38}%
-\contentsline {subsection}{5.2 Sustainable Design Analysis}{41}{table.caption.38}%
-\contentsline {subsection}{5.3 Conclusion}{42}{table.caption.39}%
-\contentsline {section}{Appendix}{43}{Item.10}%
+\contentsline {subsection}{Circuit C: Active Loading}{11}{section*.4}%
+\contentsline {section}{PART 3: AC/Transient Analysis}{13}{section*.4}%
+\contentsline {subsection}{Circuit A: Passive Resistive Loading}{13}{section*.5}%
+\contentsline {subsection}{Circuit B: Emitter Degeneration Loading}{15}{section*.5}%
+\contentsline {subsection}{Circuit C: Active Loading}{18}{section*.5}%
+\contentsline {section}{Part 4: Results/Discussion}{20}{section*.5}%
+\contentsline {subsection}{Performance Metric Polygons (Computer-Aided)}{20}{section*.6}%
+\contentsline {subsection}{Performance Trade-Off Polygon}{25}{table.1}%
+\contentsline {subsection}{PSpice Simulation}{28}{table.1}%
+\contentsline {section}{Part 5: Discussion and Conclusion}{41}{figure.caption.35}%
+\contentsline {subsection}{5.1 Discussion}{41}{section*.36}%
+\contentsline {paragraph}{Circuit A: }{41}{table.caption.37}%
+\contentsline {paragraph}{Circuit B}{41}{table.caption.37}%
+\contentsline {paragraph}{Circuit C}{41}{table.caption.37}%
+\contentsline {paragraph}{Voltage Gain:}{42}{table.caption.38}%
+\contentsline {paragraph}{Bandwidth:}{42}{table.caption.38}%
+\contentsline {paragraph}{Input Impedance.}{42}{table.caption.38}%
+\contentsline {paragraph}{Output Impedance:}{42}{table.caption.38}%
+\contentsline {subsection}{5.2 Sustainable Design Analysis}{43}{table.caption.38}%
+\contentsline {subsection}{5.3 Conclusion}{43}{table.caption.39}%
+\contentsline {section}{Appendix}{44}{Item.10}%

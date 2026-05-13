@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.11.1)  12 MAY 2026 14:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.11.1)  13 MAY 2026 17:56
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -914,24 +914,34 @@ Package hyperref Warning: The anchor of a bookmark and its parent's must not
 
 
 [8]
-
-[9]
-
-[10]
-
-[11]
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 749.
-
-
-Overfull \hbox (49.32654pt too wide) detected at line 831
+Overfull \hbox (71.74066pt too wide) detected at line 694
 []
  []
 
 
 
+[9]
+
+[10]
+Overfull \hbox (14.30496pt too wide) detected at line 769
+[]
+ []
+
+
+
+[11]
+
 [12]
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 776.
+
+
+Overfull \hbox (37.28908pt too wide) detected at line 864
+[]
+ []
+
+
 
 [13]
 
@@ -940,238 +950,240 @@ Overfull \hbox (49.32654pt too wide) detected at line 831
 [15]
 
 [16]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 964.
-
 
 [17]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 1003.
+
 
 [18]
 
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 1019.
+[19]
 
-<simulation website/img/image.png, id=224, 1127.412pt x 633.567pt>
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 1058.
+
+<simulation website/img/image.png, id=228, 1131.0255pt x 642.60075pt>
 File: simulation website/img/image.png Graphic file (type png)
 <use simulation website/img/image.png>
-Package pdftex.def Info: simulation website/img/image.png  used on input line 1024.
-(pdftex.def)             Requested size: 386.96027pt x 217.44975pt.
-<simulation website/img/image copy.png, id=225, 1129.821pt x 641.39626pt>
+Package pdftex.def Info: simulation website/img/image.png  used on input line 1063.
+(pdftex.def)             Requested size: 386.96027pt x 219.8541pt.
+<simulation website/img/image copy.png, id=229, 1134.03674pt x 635.37375pt>
 File: simulation website/img/image copy.png Graphic file (type png)
 <use simulation website/img/image copy.png>
-Package pdftex.def Info: simulation website/img/image copy.png  used on input line 1028.
-(pdftex.def)             Requested size: 386.96027pt x 219.6769pt.
-<simulation website/img/image copy 2.png, id=226, 1139.457pt x 636.57825pt>
+Package pdftex.def Info: simulation website/img/image copy.png  used on input line 1067.
+(pdftex.def)             Requested size: 386.96027pt x 216.7998pt.
+<simulation website/img/image copy 2.png, id=230, 1133.4345pt x 641.9985pt>
 File: simulation website/img/image copy 2.png Graphic file (type png)
 <use simulation website/img/image copy 2.png>
-Package pdftex.def Info: simulation website/img/image copy 2.png  used on input line 1032.
-(pdftex.def)             Requested size: 386.96027pt x 216.18118pt.
+Package pdftex.def Info: simulation website/img/image copy 2.png  used on input line 1071.
+(pdftex.def)             Requested size: 386.96027pt x 219.17784pt.
 
 
-[19 <./simulation website/img/image.png>]
-<simulation website/img/image copy 3.png, id=233, 1134.03674pt x 642.60075pt>
+[20 <./simulation website/img/image.png>]
+<simulation website/img/image copy 3.png, id=237, 1147.28625pt x 646.21425pt>
 File: simulation website/img/image copy 3.png Graphic file (type png)
 <use simulation website/img/image copy 3.png>
-Package pdftex.def Info: simulation website/img/image copy 3.png  used on input line 1036.
-(pdftex.def)             Requested size: 386.96027pt x 219.26578pt.
-<simulation website/img/image copy 4.png, id=234, 1139.457pt x 643.203pt>
+Package pdftex.def Info: simulation website/img/image copy 3.png  used on input line 1075.
+(pdftex.def)             Requested size: 386.96027pt x 217.95477pt.
+<simulation website/img/image copy 4.png, id=238, 1133.4345pt x 638.98724pt>
 File: simulation website/img/image copy 4.png Graphic file (type png)
 <use simulation website/img/image copy 4.png>
-Package pdftex.def Info: simulation website/img/image copy 4.png  used on input line 1040.
-(pdftex.def)             Requested size: 386.96027pt x 218.43095pt.
-<simulation website/img/image copy 5.png, id=235, 1139.457pt x 645.612pt>
+Package pdftex.def Info: simulation website/img/image copy 4.png  used on input line 1079.
+(pdftex.def)             Requested size: 386.96027pt x 218.1498pt.
+<simulation website/img/image copy 5.png, id=239, 1141.866pt x 629.9535pt>
 File: simulation website/img/image copy 5.png Graphic file (type png)
 <use simulation website/img/image copy 5.png>
-Package pdftex.def Info: simulation website/img/image copy 5.png  used on input line 1044.
-(pdftex.def)             Requested size: 386.96027pt x 219.24904pt.
+Package pdftex.def Info: simulation website/img/image copy 5.png  used on input line 1083.
+(pdftex.def)             Requested size: 386.96027pt x 213.47966pt.
 
 
-[20 <./simulation website/img/image copy.png> <./simulation website/img/image copy 2.png> <./simulation website/img/image copy 3.png>]
-<simulation website/img/image copy 6.png, id=246, 1136.44576pt x 648.62325pt>
+[21 <./simulation website/img/image copy.png> <./simulation website/img/image copy 2.png> <./simulation website/img/image copy 3.png>]
+<simulation website/img/image copy 6.png, id=250, 1140.05925pt x 642.60075pt>
 File: simulation website/img/image copy 6.png Graphic file (type png)
 <use simulation website/img/image copy 6.png>
-Package pdftex.def Info: simulation website/img/image copy 6.png  used on input line 1048.
-(pdftex.def)             Requested size: 386.96027pt x 220.85559pt.
-<simulation website/img/image copy 7.png, id=247, 1136.44576pt x 641.9985pt>
+Package pdftex.def Info: simulation website/img/image copy 6.png  used on input line 1087.
+(pdftex.def)             Requested size: 386.96027pt x 218.10876pt.
+<simulation website/img/image copy 7.png, id=251, 1141.26375pt x 629.9535pt>
 File: simulation website/img/image copy 7.png Graphic file (type png)
 <use simulation website/img/image copy 7.png>
-Package pdftex.def Info: simulation website/img/image copy 7.png  used on input line 1052.
-(pdftex.def)             Requested size: 386.96027pt x 218.59987pt.
-<simulation website/img/image copy 8.png, id=248, 1149.093pt x 642.60075pt>
+Package pdftex.def Info: simulation website/img/image copy 7.png  used on input line 1091.
+(pdftex.def)             Requested size: 386.96027pt x 213.595pt.
+<simulation website/img/image copy 8.png, id=252, 1131.0255pt x 632.3625pt>
 File: simulation website/img/image copy 8.png Graphic file (type png)
 <use simulation website/img/image copy 8.png>
-Package pdftex.def Info: simulation website/img/image copy 8.png  used on input line 1056.
-(pdftex.def)             Requested size: 386.96027pt x 216.40263pt.
+Package pdftex.def Info: simulation website/img/image copy 8.png  used on input line 1095.
+(pdftex.def)             Requested size: 386.96027pt x 216.35127pt.
 
 
-[21 <./simulation website/img/image copy 4.png> <./simulation website/img/image copy 5.png> <./simulation website/img/image copy 6.png>]
-<simulation website/img/image copy 9.png, id=259, 1141.866pt x 638.385pt>
+[22 <./simulation website/img/image copy 4.png> <./simulation website/img/image copy 5.png> <./simulation website/img/image copy 6.png>]
+<simulation website/img/image copy 9.png, id=263, 1144.87724pt x 640.19176pt>
 File: simulation website/img/image copy 9.png Graphic file (type png)
 <use simulation website/img/image copy 9.png>
-Package pdftex.def Info: simulation website/img/image copy 9.png  used on input line 1060.
-(pdftex.def)             Requested size: 386.96027pt x 216.33693pt.
-<simulation website/img/image copy 10.png, id=260, 1140.05925pt x 639.5895pt>
+Package pdftex.def Info: simulation website/img/image copy 9.png  used on input line 1099.
+(pdftex.def)             Requested size: 386.96027pt x 216.38264pt.
+<simulation website/img/image copy 10.png, id=264, 1133.4345pt x 637.1805pt>
 File: simulation website/img/image copy 10.png Graphic file (type png)
 <use simulation website/img/image copy 10.png>
-Package pdftex.def Info: simulation website/img/image copy 10.png  used on input line 1064.
-(pdftex.def)             Requested size: 386.96027pt x 217.08669pt.
+Package pdftex.def Info: simulation website/img/image copy 10.png  used on input line 1103.
+(pdftex.def)             Requested size: 386.96027pt x 217.53297pt.
 
 
-[22 <./simulation website/img/image copy 7.png> <./simulation website/img/image copy 8.png> <./simulation website/img/image copy 9.png>]
+[23 <./simulation website/img/image copy 7.png> <./simulation website/img/image copy 8.png> <./simulation website/img/image copy 9.png>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 1082.
+(Font)              <10> on input line 1121.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 1082.
- [23 <./simulation website/img/image copy 10.png>]
-
-[24]
+(Font)              <7> on input line 1121.
+ [24 <./simulation website/img/image copy 10.png>]
 
 [25]
 
 [26]
-<pspice simulation images/image.png, id=293, 874.467pt x 534.19576pt>
+
+[27]
+<pspice simulation images/image.png, id=297, 874.467pt x 534.19576pt>
 File: pspice simulation images/image.png Graphic file (type png)
 <use pspice simulation images/image.png>
-Package pdftex.def Info: pspice simulation images/image.png  used on input line 1432.
+Package pdftex.def Info: pspice simulation images/image.png  used on input line 1476.
 (pdftex.def)             Requested size: 455.24411pt x 278.10129pt.
-<pspice simulation images/image copy.png, id=294, 844.3545pt x 533.5935pt>
+<pspice simulation images/image copy.png, id=298, 844.3545pt x 533.5935pt>
 File: pspice simulation images/image copy.png Graphic file (type png)
 <use pspice simulation images/image copy.png>
-Package pdftex.def Info: pspice simulation images/image copy.png  used on input line 1438.
+Package pdftex.def Info: pspice simulation images/image copy.png  used on input line 1482.
 (pdftex.def)             Requested size: 455.24411pt x 287.68839pt.
 
 
-[27]
-<pspice simulation images/image copy 2.png, id=299, 847.36575pt x 512.51476pt>
+[28]
+<pspice simulation images/image copy 2.png, id=303, 847.36575pt x 512.51476pt>
 File: pspice simulation images/image copy 2.png Graphic file (type png)
 <use pspice simulation images/image copy 2.png>
-Package pdftex.def Info: pspice simulation images/image copy 2.png  used on input line 1444.
+Package pdftex.def Info: pspice simulation images/image copy 2.png  used on input line 1488.
 (pdftex.def)             Requested size: 455.24411pt x 275.34618pt.
 
 
-[28 <./pspice simulation images/image.png> <./pspice simulation images/image copy.png>]
-<matlab plotting result/Circuit A - Transient.png, id=308, 598.3956pt x 396.0396pt>
+[29 <./pspice simulation images/image.png> <./pspice simulation images/image copy.png>]
+<matlab plotting result/Circuit A - Transient.png, id=313, 598.3956pt x 396.0396pt>
 File: matlab plotting result/Circuit A - Transient.png Graphic file (type png)
 <use matlab plotting result/Circuit A - Transient.png>
-Package pdftex.def Info: matlab plotting result/Circuit A - Transient.png  used on input line 1474.
+Package pdftex.def Info: matlab plotting result/Circuit A - Transient.png  used on input line 1518.
 (pdftex.def)             Requested size: 455.24411pt x 301.3014pt.
 
 
-[29 <./pspice simulation images/image copy 2.png>]
-<matlab plotting result/Circuit A - AC Sweep.png, id=317, 600.8046pt x 398.9304pt>
+[30 <./pspice simulation images/image copy 2.png>]
+<matlab plotting result/Circuit A - AC Sweep.png, id=321, 600.8046pt x 398.9304pt>
 File: matlab plotting result/Circuit A - AC Sweep.png Graphic file (type png)
 <use matlab plotting result/Circuit A - AC Sweep.png>
-Package pdftex.def Info: matlab plotting result/Circuit A - AC Sweep.png  used on input line 1481.
+Package pdftex.def Info: matlab plotting result/Circuit A - AC Sweep.png  used on input line 1525.
 (pdftex.def)             Requested size: 455.24411pt x 302.28935pt.
-<pspice simulation images/image copy 4.png, id=318, 783.52725pt x 573.342pt>
+<pspice simulation images/image copy 4.png, id=322, 783.52725pt x 573.342pt>
 File: pspice simulation images/image copy 4.png Graphic file (type png)
 <use pspice simulation images/image copy 4.png>
-Package pdftex.def Info: pspice simulation images/image copy 4.png  used on input line 1488.
+Package pdftex.def Info: pspice simulation images/image copy 4.png  used on input line 1532.
 (pdftex.def)             Requested size: 455.24411pt x 333.12474pt.
-<pspice simulation images/image copy 5.png, id=319, 747.39224pt x 558.28575pt>
+<pspice simulation images/image copy 5.png, id=323, 747.39224pt x 558.28575pt>
 File: pspice simulation images/image copy 5.png Graphic file (type png)
 <use pspice simulation images/image copy 5.png>
-Package pdftex.def Info: pspice simulation images/image copy 5.png  used on input line 1494.
+Package pdftex.def Info: pspice simulation images/image copy 5.png  used on input line 1538.
 (pdftex.def)             Requested size: 455.24411pt x 340.05972pt.
 
 
-[30 <./matlab plotting result/Circuit A - Transient.png (PNG copy)> <./matlab plotting result/Circuit A - AC Sweep.png (PNG copy)>]
-<pspice simulation images/image copy 6.png, id=326, 739.563pt x 552.26324pt>
+[31 <./matlab plotting result/Circuit A - Transient.png (PNG copy)> <./matlab plotting result/Circuit A - AC Sweep.png (PNG copy)>]
+<pspice simulation images/image copy 6.png, id=330, 739.563pt x 552.26324pt>
 File: pspice simulation images/image copy 6.png Graphic file (type png)
 <use pspice simulation images/image copy 6.png>
-Package pdftex.def Info: pspice simulation images/image copy 6.png  used on input line 1500.
+Package pdftex.def Info: pspice simulation images/image copy 6.png  used on input line 1544.
 (pdftex.def)             Requested size: 455.24411pt x 339.95589pt.
 
 
-[31 <./pspice simulation images/image copy 4.png>]
+[32 <./pspice simulation images/image copy 4.png>]
 
-[32 <./pspice simulation images/image copy 5.png>]
-<matlab plotting result/Circuit B - Transient.png, id=339, 609.9588pt x 396.0396pt>
+[33 <./pspice simulation images/image copy 5.png>]
+<matlab plotting result/Circuit B - Transient.png, id=343, 609.9588pt x 396.0396pt>
 File: matlab plotting result/Circuit B - Transient.png Graphic file (type png)
 <use matlab plotting result/Circuit B - Transient.png>
-Package pdftex.def Info: matlab plotting result/Circuit B - Transient.png  used on input line 1530.
+Package pdftex.def Info: matlab plotting result/Circuit B - Transient.png  used on input line 1574.
 (pdftex.def)             Requested size: 455.24411pt x 295.59071pt.
 
 
-[33 <./pspice simulation images/image copy 6.png>]
-<matlab plotting result/Circuit B - AC Sweep.png, id=347, 600.8046pt x 398.9304pt>
+[34 <./pspice simulation images/image copy 6.png>]
+<matlab plotting result/Circuit B - AC Sweep.png, id=351, 600.8046pt x 398.9304pt>
 File: matlab plotting result/Circuit B - AC Sweep.png Graphic file (type png)
 <use matlab plotting result/Circuit B - AC Sweep.png>
-Package pdftex.def Info: matlab plotting result/Circuit B - AC Sweep.png  used on input line 1537.
+Package pdftex.def Info: matlab plotting result/Circuit B - AC Sweep.png  used on input line 1581.
 (pdftex.def)             Requested size: 455.24411pt x 302.28935pt.
-<pspice simulation images/image copy 9.png, id=348, 621.522pt x 540.8205pt>
+<pspice simulation images/image copy 9.png, id=352, 621.522pt x 540.8205pt>
 File: pspice simulation images/image copy 9.png Graphic file (type png)
 <use pspice simulation images/image copy 9.png>
-Package pdftex.def Info: pspice simulation images/image copy 9.png  used on input line 1545.
+Package pdftex.def Info: pspice simulation images/image copy 9.png  used on input line 1589.
 (pdftex.def)             Requested size: 455.24411pt x 396.1408pt.
-<pspice simulation images/image copy 10.png, id=349, 653.44125pt x 537.80925pt>
+<pspice simulation images/image copy 10.png, id=353, 653.44125pt x 537.80925pt>
 File: pspice simulation images/image copy 10.png Graphic file (type png)
 <use pspice simulation images/image copy 10.png>
-Package pdftex.def Info: pspice simulation images/image copy 10.png  used on input line 1551.
+Package pdftex.def Info: pspice simulation images/image copy 10.png  used on input line 1595.
 (pdftex.def)             Requested size: 455.24411pt x 374.68314pt.
 
 
-[34 <./matlab plotting result/Circuit B - Transient.png (PNG copy)> <./matlab plotting result/Circuit B - AC Sweep.png (PNG copy)>]
-<pspice simulation images/image copy 11.png, id=356, 661.2705pt x 543.2295pt>
+[35 <./matlab plotting result/Circuit B - Transient.png (PNG copy)> <./matlab plotting result/Circuit B - AC Sweep.png (PNG copy)>]
+<pspice simulation images/image copy 11.png, id=361, 661.2705pt x 543.2295pt>
 File: pspice simulation images/image copy 11.png Graphic file (type png)
 <use pspice simulation images/image copy 11.png>
-Package pdftex.def Info: pspice simulation images/image copy 11.png  used on input line 1557.
+Package pdftex.def Info: pspice simulation images/image copy 11.png  used on input line 1601.
 (pdftex.def)             Requested size: 455.24411pt x 373.98328pt.
 
 
-[35 <./pspice simulation images/image copy 9.png>]
+[36 <./pspice simulation images/image copy 9.png>]
 
-[36 <./pspice simulation images/image copy 10.png>]
-<matlab plotting result/Circuit C - Transient.png, id=370, 609.9588pt x 396.0396pt>
+[37 <./pspice simulation images/image copy 10.png>]
+<matlab plotting result/Circuit C - Transient.png, id=374, 609.9588pt x 396.0396pt>
 File: matlab plotting result/Circuit C - Transient.png Graphic file (type png)
 <use matlab plotting result/Circuit C - Transient.png>
-Package pdftex.def Info: matlab plotting result/Circuit C - Transient.png  used on input line 1597.
+Package pdftex.def Info: matlab plotting result/Circuit C - Transient.png  used on input line 1641.
 (pdftex.def)             Requested size: 455.24411pt x 295.59071pt.
 
 
-[37 <./pspice simulation images/image copy 11.png>]
-<matlab plotting result/Circuit C - AC Sweep.png, id=377, 600.8046pt x 398.9304pt>
+[38 <./pspice simulation images/image copy 11.png>]
+<matlab plotting result/Circuit C - AC Sweep.png, id=381, 600.8046pt x 398.9304pt>
 File: matlab plotting result/Circuit C - AC Sweep.png Graphic file (type png)
 <use matlab plotting result/Circuit C - AC Sweep.png>
-Package pdftex.def Info: matlab plotting result/Circuit C - AC Sweep.png  used on input line 1604.
+Package pdftex.def Info: matlab plotting result/Circuit C - AC Sweep.png  used on input line 1648.
 (pdftex.def)             Requested size: 455.24411pt x 302.28935pt.
 
 
-[38 <./matlab plotting result/Circuit C - Transient.png (PNG copy)>]
+[39 <./matlab plotting result/Circuit C - Transient.png (PNG copy)>]
 
-[39 <./matlab plotting result/Circuit C - AC Sweep.png (PNG copy)>]
+[40 <./matlab plotting result/Circuit C - AC Sweep.png (PNG copy)>]
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 1615.
+(hyperref)                be the same. Added a new anchor on input line 1659.
 
 
-
-[40]
 
 [41]
 
 [42]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1772.
+
+[43]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1816.
  (C:\Program Files\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 10000) in paragraph at lines 1772--1773
+Underfull \hbox (badness 10000) in paragraph at lines 1816--1817
 []\T1/lmr/m/n/10.95 Electrical En-gi-neer-ing Stack Ex-change. (n.d.). \T1/lmr/m/it/10.95 Book sug-ges-tion - How
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1772--1773
+Underfull \hbox (badness 10000) in paragraph at lines 1816--1817
 \T1/lmr/m/it/10.95 to cal-cu-late the power dis-si-pa-tion of a BJT\T1/lmr/m/n/10.95 . Re-trieved May 10,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1772--1773
+Underfull \hbox (badness 10000) in paragraph at lines 1816--1817
 \T1/lmr/m/n/10.95 2026, from [][]$\T1/lmtt/m/n/10.95 https : / / electronics . stackexchange . com / questions / 309254 /
  []
 
 
 
-[43] (report.aux)
+[44] (report.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
@@ -1180,17 +1192,17 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 26B5DFB4A1B57AA0A730922D4220342C;4794.
  ) 
 Here is how much of TeX's memory you used:
- 60416 strings out of 473899
- 1549648 string characters out of 5736295
- 2303234 words of memory out of 5000000
- 82534 multiletter control sequences out of 15000+600000
+ 60510 strings out of 473899
+ 1552517 string characters out of 5736295
+ 2302802 words of memory out of 5000000
+ 82627 multiletter control sequences out of 15000+600000
  645407 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  117i,14n,121p,831b,2041s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Program Files/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmmi7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmss8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmsy6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmtt10.pfb>
-Output written on report.pdf (45 pages, 5360257 bytes).
+Output written on report.pdf (46 pages, 5561684 bytes).
 PDF statistics:
- 541 PDF objects out of 1000 (max. 8388607)
- 99 named destinations out of 1000 (max. 500000)
+ 545 PDF objects out of 1000 (max. 8388607)
+ 100 named destinations out of 1000 (max. 500000)
  340 words of extra memory for PDF output out of 10000 (max. 10000000)
 
