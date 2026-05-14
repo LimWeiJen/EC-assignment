@@ -14,18 +14,18 @@
 \contentsline {subsection}{Circuit B: Emitter Degeneration Loading}{15}{section*.5}%
 \contentsline {subsection}{Circuit C: Active Loading}{18}{section*.5}%
 \contentsline {section}{Part 4: Results/Discussion}{20}{section*.5}%
-\contentsline {subsection}{Performance Metric Polygons (Computer-Aided)}{20}{section*.6}%
+\contentsline {subsection}{Performance Metric Polygons}{20}{section*.6}%
 \contentsline {subsection}{Performance Trade-Off Polygon}{25}{table.1}%
-\contentsline {subsection}{PSpice Simulation}{28}{table.1}%
-\contentsline {section}{Part 5: Discussion and Conclusion}{41}{figure.caption.35}%
-\contentsline {subsection}{5.1 Discussion}{41}{section*.36}%
-\contentsline {paragraph}{Circuit A: }{41}{table.caption.37}%
-\contentsline {paragraph}{Circuit B}{41}{table.caption.37}%
-\contentsline {paragraph}{Circuit C}{41}{table.caption.37}%
-\contentsline {paragraph}{Voltage Gain:}{42}{table.caption.38}%
-\contentsline {paragraph}{Bandwidth:}{42}{table.caption.38}%
-\contentsline {paragraph}{Input Impedance.}{42}{table.caption.38}%
-\contentsline {paragraph}{Output Impedance:}{42}{table.caption.38}%
-\contentsline {subsection}{5.2 Sustainable Design Analysis}{43}{table.caption.38}%
-\contentsline {subsection}{5.3 Conclusion}{43}{table.caption.39}%
-\contentsline {section}{Appendix}{44}{Item.10}%
+\contentsline {subsection}{PSpice Simulation}{27}{table.1}%
+\contentsline {section}{Part 5: Discussion and Conclusion}{39}{figure.caption.35}%
+\contentsline {subsection}{5.1 Discussion}{39}{section*.36}%
+\contentsline {paragraph}{Circuit A: }{39}{table.caption.37}%
+\contentsline {paragraph}{Circuit B}{39}{table.caption.37}%
+\contentsline {paragraph}{Circuit C}{39}{table.caption.37}%
+\contentsline {paragraph}{Voltage Gain:}{40}{table.caption.38}%
+\contentsline {paragraph}{Bandwidth:}{40}{table.caption.38}%
+\contentsline {paragraph}{Input Impedance.}{40}{table.caption.38}%
+\contentsline {paragraph}{Output Impedance:}{40}{table.caption.38}%
+\contentsline {subsection}{5.2 Sustainable Design Analysis}{41}{table.caption.38}%
+\contentsline {subsection}{5.3 Conclusion}{42}{table.caption.39}%
+\contentsline {section}{Appendix}{42}{Item.10}%

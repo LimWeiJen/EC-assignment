@@ -1,13 +1,17 @@
 % Define the Excel file name
-filename = 'simulation result (AC analysis).xlsx';
+filename = "simulation result (AC analysis).xlsx";
 
-% Define the circuits and their respective colors
+% Define the circuits
 circuits = {'A', 'B', 'C'};
-colors = {'b', 'g', 'r'}; % A = Blue, B = Green, C = Red
+
+% Define unique, non-black colors for Vout/AC Sweep and Vin
+vout_colors = {'b', 'g', 'r'}; % Vout: Blue, Green, Red
+vin_colors = {'m', 'c', [0.8500, 0.3250, 0.0980]}; % Vin: Magenta, Cyan, Orange (RGB triplet)
 
 for i = 1:length(circuits)
     circuit = circuits{i};
-    c_color = colors{i}; % Grab the specific color for this circuit
+    c_vout_color = vout_colors{i}; % Grab the Vout/AC sweep color for this circuit
+    c_vin_color = vin_colors{i};   % Grab the Vin color for this circuit
     
     %% ==========================================
     % 1. TRANSIENT ANALYSIS GRAPH
@@ -18,11 +22,11 @@ for i = 1:length(circuits)
     % Create a new figure for this circuit's Transient Analysis
     figure('Name', sprintf('Circuit %s - Transient', circuit), 'NumberTitle', 'off');
     
-    % FIX: Use black dashed ('k--') for Vin so it never blends with Vout
-    plot(data_TA.Time * 1000, data_TA.Vin, 'k--', 'LineWidth', 1.5); hold on;
+    % Plot Vin using its unique non-black color (dashed)
+    plot(data_TA.Time * 1000, data_TA.Vin, '--', 'Color', c_vin_color, 'LineWidth', 1.5); hold on;
     
-    % Use the circuit's specific color for Vout
-    plot(data_TA.Time * 1000, data_TA.Vout, c_color, 'LineWidth', 1.5);
+    % Plot Vout using its unique non-black color (solid)
+    plot(data_TA.Time * 1000, data_TA.Vout, 'Color', c_vout_color, 'LineWidth', 1.5);
     
     title(sprintf('Circuit %s: Transient Analysis', circuit));
     xlabel('Time (ms)');
@@ -42,8 +46,8 @@ for i = 1:length(circuits)
     % Create a new figure for this circuit's AC Sweep
     figure('Name', sprintf('Circuit %s - AC Sweep', circuit), 'NumberTitle', 'off');
     
-    % Plot the line using the circuit's specific color
-    semilogx(data_AC.Frequency, gain_dB, c_color, 'LineWidth', 1.5); hold on;
+    % Plot the line using the circuit's specific Vout color
+    semilogx(data_AC.Frequency, gain_dB, 'Color', c_vout_color, 'LineWidth', 1.5); hold on;
     
     % --- BANDWIDTH MATH ---
     % Find the peak gain
@@ -62,11 +66,11 @@ for i = 1:length(circuits)
         BW = f_H - f_L;
         
         % Plot markers at the cutoff points using the CIRCUIT COLOR
-        plot(f_L, gain_dB(valid_indices(1)), 'o', 'Color', c_color, 'MarkerFaceColor', c_color, 'MarkerSize', 6);
-        plot(f_H, gain_dB(valid_indices(end)), 'o', 'Color', c_color, 'MarkerFaceColor', c_color, 'MarkerSize', 6);
+        plot(f_L, gain_dB(valid_indices(1)), 'o', 'Color', c_vout_color, 'MarkerFaceColor', c_vout_color, 'MarkerSize', 6);
+        plot(f_H, gain_dB(valid_indices(end)), 'o', 'Color', c_vout_color, 'MarkerFaceColor', c_vout_color, 'MarkerSize', 6);
         
         % Draw a horizontal dashed line for the cutoff threshold using the CIRCUIT COLOR
-        yline(threshold, '--', '-3dB Cutoff', 'Color', c_color, 'LabelHorizontalAlignment', 'center', 'LineWidth', 1.5);
+        yline(threshold, '--', '-3dB Cutoff', 'Color', c_vout_color, 'LabelHorizontalAlignment', 'center', 'LineWidth', 1.5);
         
         % Display the calculated values in a text box on the graph
         results_text = sprintf('Max Gain: %.2f dB\nf_L: %.2f Hz\nf_H: %.2f Hz\nBandwidth: %.2f Hz', ...

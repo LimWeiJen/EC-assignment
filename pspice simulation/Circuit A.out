@@ -1,5 +1,5 @@
-
-**** 05/07/26 21:27:28 *********** Evaluation PSpice (Nov 1999) **************
+
+**** 05/14/26 18:09:24 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit A.sch
 
@@ -13,13 +13,14 @@
 
 
 * Schematics Version 9.1 - Web Update 1
-* Thu May 07 21:23:38 2026
+* Thu May 14 18:09:24 2026
 
 
 
 ** Analysis setup **
 .ac DEC 100 10 100Meg
 .OP 
+.STMLIB "Circuit A.stl"
 
 
 * From [PSPICE NETLIST] section of pspiceev.ini:
@@ -32,18 +33,18 @@
 
 
 
-R_R1         $N_0002 $N_0001  1k  
-R_R3         0 $N_0002  1k  
-R_R4         0 $N_0003  1k  
-R_R2         $N_0004 $N_0001  1k  
-Q_Q1         $N_0004 $N_0002 $N_0003 Q2N2222
-V_V1         $N_0001 0 10V
-C_C3         $N_0005 $N_0004  10u  
-C_C1         $N_0006 $N_0002  10u  
-C_C2         0 $N_0003  10u  
+R_R4         0 $N_0001  1k  
+R_R2         $N_0003 $N_0002  1k  
+Q_Q1         $N_0003 $N_0004 $N_0001 Q2N2222
+V_V1         $N_0002 0 10V
+C_C3         $N_0005 $N_0003  10u  
+C_C1         $N_0006 $N_0004  10u  
+C_C2         0 $N_0001  10u  
 R_R5         0 $N_0005  1k  
 V_V2         $N_0006 0  AC 1V
 +SIN 0V 10m 1k 0 0 0
+R_R3         0 $N_0004  4.7k  
+R_R1         $N_0004 $N_0002  10.5k  
 
 **** RESUMING "Circuit A.cir" ****
 .INC "Circuit A.als"
@@ -54,17 +55,17 @@ V_V2         $N_0006 0  AC 1V
 * Schematics Aliases *
 
 .ALIASES
-R_R1            R1(1=$N_0002 2=$N_0001 )
-R_R3            R3(1=0 2=$N_0002 )
-R_R4            R4(1=0 2=$N_0003 )
-R_R2            R2(1=$N_0004 2=$N_0001 )
-Q_Q1            Q1(c=$N_0004 b=$N_0002 e=$N_0003 )
-V_V1            V1(+=$N_0001 -=0 )
-C_C3            C3(1=$N_0005 2=$N_0004 )
-C_C1            C1(1=$N_0006 2=$N_0002 )
-C_C2            C2(1=0 2=$N_0003 )
+R_R4            R4(1=0 2=$N_0001 )
+R_R2            R2(1=$N_0003 2=$N_0002 )
+Q_Q1            Q1(c=$N_0003 b=$N_0004 e=$N_0001 )
+V_V1            V1(+=$N_0002 -=0 )
+C_C3            C3(1=$N_0005 2=$N_0003 )
+C_C1            C1(1=$N_0006 2=$N_0004 )
+C_C2            C2(1=0 2=$N_0001 )
 R_R5            R5(1=0 2=$N_0005 )
 V_V2            V2(+=$N_0006 -=0 )
+R_R3            R3(1=0 2=$N_0004 )
+R_R1            R1(1=$N_0004 2=$N_0002 )
 .ENDALIASES
 
 
@@ -74,7 +75,7 @@ V_V2            V2(+=$N_0006 -=0 )
 
 .END
 
-**** 05/07/26 21:27:28 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:09:24 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit A.sch
 
@@ -114,7 +115,7 @@ V_V2            V2(+=$N_0006 -=0 )
            D     .87         
 
 
-**** 05/07/26 21:27:28 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:09:24 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit A.sch
 
@@ -129,9 +130,9 @@ V_V2            V2(+=$N_0006 -=0 )
  NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
 
 
-($N_0001)   10.0000                   ($N_0002)    4.9873                       
+($N_0001)    2.3797                   ($N_0002)   10.0000                       
 
-($N_0003)    4.3035                   ($N_0004)    5.7219                       
+($N_0003)    7.6344                   ($N_0004)    3.0465                       
 
 ($N_0005)    0.0000                   ($N_0006)    0.0000                   
 
@@ -141,13 +142,13 @@ V_V2            V2(+=$N_0006 -=0 )
     VOLTAGE SOURCE CURRENTS
     NAME         CURRENT
 
-    V_V1        -9.291E-03
+    V_V1        -3.028E-03
     V_V2         0.000E+00
 
-    TOTAL POWER DISSIPATION   9.29E-02  WATTS
+    TOTAL POWER DISSIPATION   3.03E-02  WATTS
 
 
-**** 05/07/26 21:27:28 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:09:24 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit A.sch
 
@@ -167,26 +168,26 @@ V_V2            V2(+=$N_0006 -=0 )
 
 NAME         Q_Q1      
 MODEL        Q2N2222   
-IB           2.55E-05 
-IC           4.28E-03 
-VBE          6.84E-01 
-VBC         -7.35E-01 
-VCE          1.42E+00 
+IB           1.40E-05 
+IC           2.37E-03 
+VBE          6.67E-01 
+VBC         -4.59E+00 
+VCE          5.25E+00 
 BETADC       1.68E+02 
-GM           1.63E-01 
-RPI          1.10E+03 
+GM           9.07E-02 
+RPI          2.02E+03 
 RX           1.00E+01 
-RO           1.75E+04 
-CBE          1.04E-10 
-CBC          5.79E-12 
+RO           3.32E+04 
+CBE          7.43E-11 
+CBC          3.74E-12 
 CJS          0.00E+00 
-BETAAC       1.80E+02 
+BETAAC       1.83E+02 
 CBX/CBX2     0.00E+00 
-FT/FT2       2.35E+08 
+FT/FT2       1.85E+08 
 
 
 
           JOB CONCLUDED
 
-          TOTAL JOB TIME             .03
+          TOTAL JOB TIME             .06
 

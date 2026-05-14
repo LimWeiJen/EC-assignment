@@ -1054,8 +1054,8 @@ BW &= f_H - f_L\\
 \section*{Part 4: Results/Discussion}
 \addcontentsline{toc}{section}{Part 4: Results/Discussion}
 
-\subsection*{Performance Metric Polygons (Computer-Aided)}
-\addcontentsline{toc}{subsection}{Performance Metric Polygons (Computer-Aided)}
+\subsection*{Performance Metric Polygons}
+\addcontentsline{toc}{subsection}{Performance Metric Polygons}
 Based on the equations derived above, a simulation website is created to analyze the change in output properties compared to the change in input properties, hence creating/deriving the Performance Metric Polygon as adhered to that of Figure 1. The following images are the screenshots of the result.
 
 \begin{figure}[H]
@@ -1221,30 +1221,35 @@ Based on the analysis from the simulation above, certain relationships between v
 % DIAGRAM 1: CIRCUIT A
 % ==========================================
 \begin{tikzpicture}[
+    scale=0.6, transform shape, 
     coreNode/.style={circle, fill=blue!80, text=white, font=\bfseries, minimum size=1.2cm, align=center},
     perfNode/.style={circle, fill=white, draw=black, thick, minimum size=1.6cm, align=center},
     extNode/.style={ellipse, fill=white, draw=gray, thick, minimum size=1.2cm, align=center},
     directRel/.style={-{Stealth[scale=1.2]}, blue, thick},
     tradeRel/.style={-{Stealth[scale=1.2]}, red, thick, dashed},
-    legendBox/.style={draw, fill=white, align=left, font=\small}
+    legendBox/.style={draw, fill=white, align=left, font=\small},
+    polyNode/.style={align=center, font=\large, fill=white, inner sep=5pt},
+    polyDirect/.style={<->, >=Stealth, blue, thick},
+    polyTrade/.style={<->, >=Stealth, red, thick, dashed}
 ]
-    % Background Zones
+    % ==========================================
+    % DIAGRAM 1: CIRCUIT A (Left Side)
+    % ==========================================
     \fill[cyan!5] (0,0) circle (7cm); 
     \fill[cyan!15] (0,0) circle (4.5cm); 
     \fill[cyan!30] (0,0) circle (2.2cm); 
 
-    % Titles and Labels
     \node[font=\Large\bfseries] at (0, 7.8) {Diagram for Circuit A};
     \node[font=\bfseries, gray] at (0, 6.5) {EXTERNAL VARIABLES};
     \node[font=\bfseries, gray] at (0, 4) {PERFORMANCE METRICS};
     \node[font=\bfseries, white] at (0, 1.7) {CORE CURRENTS};
 
-    % Core Currents (Split into 3 nodes in the center)
+    % Core Currents
     \node[coreNode] (ic) at (90:0.9cm)  {$I_C$};
     \node[coreNode] (ib) at (210:0.9cm) {$I_B$};
     \node[coreNode] (ie) at (330:0.9cm) {$I_E$};
 
-    % Performance Nodes (Middle Ring)
+    % Performance Nodes
     \node[perfNode] (av)     at (30:3.2cm)  {$A_v$};
     \node[perfNode] (bw)     at (90:3.2cm)  {$BW$};
     \node[perfNode] (ptot)   at (150:3.2cm) {$P_{total}$};
@@ -1252,7 +1257,7 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring) -- 12 variables, spaced 30 degrees apart
+    % External Nodes
     \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
     \node[extNode] (vbe)  at (60:5.8cm)  {$V_{BE}$};
     \node[extNode] (vt)   at (30:5.8cm)  {$V_T$};
@@ -1266,8 +1271,7 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[extNode] (cc)   at (150:5.8cm) {$C_C$};
     \node[extNode] (ce)   at (120:5.8cm) {$C_E$};
 
-    % Relationships (Routing through Core Currents)
-    % External -> Core (via IC being the central driver)
+    % Relationships derived from table
     \draw[directRel] (vcc) to (ic);
     \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
@@ -1276,56 +1280,95 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[directRel, bend left=10]  (r2) to (ic);
     \draw[tradeRel]  (re) to (ie);
 
-    % Core -> Performance
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
-    \draw[tradeRel]  (ic) to (vswing);  % IC up -> Vswing down (VCC increases both IC and lowers Vswing)
+    \draw[tradeRel]  (ic) to (vswing); 
+    \draw[tradeRel]  (ic) to (bw); 
     \draw[tradeRel]  (ib) to (zin);
 
-    % External -> Performance (Direct, where current isn't main driver)
     \draw[directRel, bend right=10] (vt) to (bw);
     \draw[directRel, bend right=15] (rc) to (zout);
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
-    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
+    \draw[directRel, bend left=10]  (cin) to (bw);
+    \draw[directRel, bend right=10] (cc) to (bw);
+    
+    % Internal Performance relations (Table mapped)
+    \draw[directRel, bend left=20]  (bw) to (av);      
+    \draw[directRel, bend right=20] (bw) to (vswing);  
+    \draw[directRel, bend right=35] (bw) to (zin);     
 
     % Legend
     \matrix [legendBox] at (0, -7.5) {
         \draw[directRel] (0,0) -- (1,0); & \node {Direct Relationship (Move together)}; \\
         \draw[tradeRel] (0,0) -- (1,0); & \node {Inverse Relationship (Trade-off)}; \\
     };
+
+    % ==========================================
+    % DIAGRAM 2: POLYGON A (Right Side)
+    % ==========================================
+    \begin{scope}[shift={(13.5,0)}]
+        \node[font=\Large\bfseries] at (0, 7.8) {Performance Metrics (Table Mapped)};
+
+        \node[polyNode] (p_pd) at (90:4cm) {Power\\Dissipation};
+        \node[polyNode] (p_vs) at (18:4cm) {Voltage\\Swings};
+        \node[polyNode] (p_bw) at (306:4cm) {Bandwidth};
+        \node[polyNode] (p_gain) at (234:4cm) {Gain};
+        \node[polyNode] (p_io) at (162:4cm) {Input/Output\\Impedance};
+
+        % 1. Power Trade-offs (Inverse)
+        \draw[polyTrade] (p_pd) -- (p_vs);
+        \draw[polyTrade] (p_pd) -- (p_gain);
+        \draw[polyTrade] (p_pd) -- (p_bw);
+        \draw[polyTrade] (p_pd) -- (p_io);
+
+        % 2. Direct Relationships (moving together based on table)
+        \draw[polyDirect] (p_vs) -- (p_gain);
+        \draw[polyDirect] (p_vs) -- (p_bw);
+        \draw[polyDirect] (p_vs) -- (p_io);
+        \draw[polyDirect] (p_gain) -- (p_bw);
+        \draw[polyDirect] (p_gain) -- (p_io);
+        \draw[polyDirect] (p_bw) -- (p_io);
+        
+        \node[font=\large] at (0, -5.5) {Fig. 1. Circuit A Performance trade-off polygon};
+    \end{scope}
 \end{tikzpicture}
+
+Looking at the detailed diagram for Circuit A, the collector current ($I_C$) acts as the primary driver. When an external variable (like $V_{CC}$) forces $I_C$ to increase, it causes Power Dissipation ($P_{total}$) to rise with it (a direct relationship). However, this same increase in $I_C$ suppresses Gain, Bandwidth, Voltage Swing, and Impedance. Because Power increases while those four metrics decrease, Power shares an inverse trade-off (red dashed line) with all of them in the simplified polygon. Conversely, because Gain, Bandwidth, Voltage Swing, and Impedance are all pushed down together by $I_C$, they move in unison, meaning they share direct relationships (blue solid lines) with one another.
+
 
 % ==========================================
 % DIAGRAM 2: CIRCUIT B
 % ==========================================
 \begin{tikzpicture}[
+    scale=0.6, transform shape, 
     coreNode/.style={circle, fill=green!60!black, text=white, font=\bfseries, minimum size=1.2cm, align=center},
     perfNode/.style={circle, fill=white, draw=black, thick, minimum size=1.6cm, align=center},
     extNode/.style={ellipse, fill=white, draw=gray, thick, minimum size=1.2cm, align=center},
     directRel/.style={-{Stealth[scale=1.2]}, blue, thick},
     tradeRel/.style={-{Stealth[scale=1.2]}, red, thick, dashed},
-    legendBox/.style={draw, fill=white, align=left, font=\small}
+    legendBox/.style={draw, fill=white, align=left, font=\small},
+    polyNode/.style={align=center, font=\large, fill=white, inner sep=5pt},
+    polyDirect/.style={<->, >=Stealth, blue, thick},
+    polyTrade/.style={<->, >=Stealth, red, thick, dashed}
 ]
-    % Background Zones
+    % ==========================================
+    % DIAGRAM 1: CIRCUIT B (Left Side)
+    % ==========================================
     \fill[green!5] (0,0) circle (7cm); 
     \fill[green!15] (0,0) circle (4.5cm); 
     \fill[green!30] (0,0) circle (2.2cm); 
 
-    % Titles and Labels
     \node[font=\Large\bfseries] at (0, 7.8) {Diagram for Circuit B};
     \node[font=\bfseries, gray] at (0, 6.5) {EXTERNAL VARIABLES};
     \node[font=\bfseries, gray] at (0, 4) {PERFORMANCE METRICS};
     \node[font=\bfseries, white] at (0, 1.7) {CORE CURRENTS};
 
-    % Core Currents
     \node[coreNode] (ic) at (90:0.9cm)  {$I_C$};
     \node[coreNode] (ib) at (210:0.9cm) {$I_B$};
     \node[coreNode] (ie) at (330:0.9cm) {$I_E$};
 
-    % Performance Nodes 
     \node[perfNode] (av)     at (30:3.2cm)  {$A_v$};
     \node[perfNode] (bw)     at (90:3.2cm)  {$BW$};
     \node[perfNode] (ptot)   at (150:3.2cm) {$P_{total}$};
@@ -1333,7 +1376,6 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring) -- 13 variables for Circuit B, spaced ~27.7 degrees
     \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
     \node[extNode] (vbe)  at (62:5.8cm)  {$V_{BE}$};
     \node[extNode] (vt)   at (34:5.8cm)  {$V_T$};
@@ -1348,7 +1390,6 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[extNode] (cc)   at (142:5.8cm) {$C_C$};
     \node[extNode] (ce)   at (118:5.8cm) {$C_E$};
 
-    % Relationships
     \draw[directRel] (vcc) to (ic);
     \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
@@ -1360,10 +1401,11 @@ Based on the analysis from the simulation above, certain relationships between v
 
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
-    \draw[tradeRel]  (ic) to (vswing);  % IC up -> Vswing down
+    \draw[tradeRel]  (ic) to (vswing);  
+    \draw[tradeRel]  (ic) to (bw); 
     \draw[tradeRel]  (ib) to (zin);
 
-    % Circuit B Unique: R1 inversely affects BW
+    % Unique B trade-off from table
     \draw[tradeRel, bend left=25]  (r1) to (bw);
 
     \draw[directRel, bend right=10] (vt) to (bw);
@@ -1371,44 +1413,80 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
-    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
+    \draw[directRel, bend left=10]  (cin) to (bw);  
+    \draw[directRel, bend right=10] (cc) to (bw);   
 
-    % Legend
+    \draw[directRel, bend left=20]  (bw) to (av);      
+    \draw[directRel, bend right=20] (bw) to (vswing);  
+    \draw[directRel, bend right=35] (bw) to (zin);     
+
     \matrix [legendBox] at (0, -7.5) {
         \draw[directRel] (0,0) -- (1,0); & \node {Direct Relationship (Move together)}; \\
         \draw[tradeRel] (0,0) -- (1,0); & \node {Inverse Relationship (Trade-off)}; \\
     };
+
+    % ==========================================
+    % DIAGRAM 2: POLYGON B (Right Side)
+    % ==========================================
+    \begin{scope}[shift={(13.5,0)}]
+        \node[font=\Large\bfseries] at (0, 7.8) {Performance Metrics (Table Mapped)};
+
+        \node[polyNode] (p_pd) at (90:4cm) {Power\\Dissipation};
+        \node[polyNode] (p_vs) at (18:4cm) {Voltage\\Swings};
+        \node[polyNode] (p_bw) at (306:4cm) {Bandwidth};
+        \node[polyNode] (p_gain) at (234:4cm) {Gain};
+        \node[polyNode] (p_io) at (162:4cm) {Input/Output\\Impedance};
+
+        % Identical geometry to A based on table output metrics
+        \draw[polyTrade] (p_pd) -- (p_vs);
+        \draw[polyTrade] (p_pd) -- (p_gain);
+        \draw[polyTrade] (p_pd) -- (p_bw);
+        \draw[polyTrade] (p_pd) -- (p_io);
+
+        \draw[polyDirect] (p_vs) -- (p_gain);
+        \draw[polyDirect] (p_vs) -- (p_bw);
+        \draw[polyDirect] (p_vs) -- (p_io);
+        \draw[polyDirect] (p_gain) -- (p_bw);
+        \draw[polyDirect] (p_gain) -- (p_io);
+        \draw[polyDirect] (p_bw) -- (p_io);
+        
+        \node[font=\large] at (0, -5.5) {Fig. 2. Circuit B Performance trade-off polygon};
+    \end{scope}
 \end{tikzpicture}
+
+In the detailed diagram for Circuit B, the underlying mechanics remain identical to Circuit A despite the addition of split emitter resistors ($R_{E1}$, $R_{E2}$) and $R_1$'s unique inverse effect on Bandwidth. The central pivot is still $I_C$. When $I_C$ increases, Power ($P_{total}$) directly increases while Gain, Bandwidth, Voltage Swing, and Impedance are all dragged down. Therefore, the simplified polygon perfectly mirrors Circuit A's structure: Power Dissipation stands in inverse trade-off (red dashed lines) to the other four metrics, while those four form a cluster connected by direct relationships (blue solid lines) because they fall and rise together under the influence of $I_C$.
 
 % ==========================================
 % DIAGRAM 3: CIRCUIT C
 % ==========================================
 \begin{tikzpicture}[
+    scale=0.6, transform shape, 
     coreNode/.style={circle, fill=red!70!black, text=white, font=\bfseries, minimum size=1.2cm, align=center},
     perfNode/.style={circle, fill=white, draw=black, thick, minimum size=1.6cm, align=center},
     extNode/.style={ellipse, fill=white, draw=gray, thick, minimum size=1.2cm, align=center},
     directRel/.style={-{Stealth[scale=1.2]}, blue, thick},
     tradeRel/.style={-{Stealth[scale=1.2]}, red, thick, dashed},
-    legendBox/.style={draw, fill=white, align=left, font=\small}
+    legendBox/.style={draw, fill=white, align=left, font=\small},
+    polyNode/.style={align=center, font=\large, fill=white, inner sep=5pt},
+    polyDirect/.style={<->, >=Stealth, blue, thick},
+    polyTrade/.style={<->, >=Stealth, red, thick, dashed}
 ]
-    % Background Zones
+    % ==========================================
+    % DIAGRAM 1: CIRCUIT C (Left Side)
+    % ==========================================
     \fill[red!5] (0,0) circle (7cm); 
     \fill[red!15] (0,0) circle (4.5cm); 
     \fill[red!30] (0,0) circle (2.2cm); 
 
-    % Titles and Labels
     \node[font=\Large\bfseries] at (0, 7.8) {Diagram for Circuit C};
     \node[font=\bfseries, gray] at (0, 6.5) {EXTERNAL VARIABLES};
     \node[font=\bfseries, gray] at (0, 4) {PERFORMANCE METRICS};
     \node[font=\bfseries, white] at (0, 1.7) {CORE CURRENTS};
 
-    % Core Currents
     \node[coreNode] (ic) at (90:0.9cm)  {$I_C$};
     \node[coreNode] (ib) at (210:0.9cm) {$I_B$};
     \node[coreNode] (ie) at (330:0.9cm) {$I_E$};
 
-    % Performance Nodes 
     \node[perfNode] (av)     at (30:3.2cm)  {$A_v$};
     \node[perfNode] (bw)     at (90:3.2cm)  {$BW$};
     \node[perfNode] (ptot)   at (150:3.2cm) {$P_{total}$};
@@ -1416,7 +1494,6 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[perfNode] (zin)    at (270:3.2cm) {$Z_{in}$};
     \node[perfNode] (zout)   at (330:3.2cm) {$Z_{out}$};
 
-    % External Nodes (Outer Ring) -- 12 variables for Circuit C, spaced 30 degrees apart
     \node[extNode] (vcc)  at (90:5.8cm)  {$V_{CC}$};
     \node[extNode] (vbe)  at (60:5.8cm)  {$V_{BE}$};
     \node[extNode] (vt)   at (30:5.8cm)  {$V_T$};
@@ -1430,7 +1507,6 @@ Based on the analysis from the simulation above, certain relationships between v
     \node[extNode] (cc)   at (150:5.8cm) {$C_C$};
     \node[extNode] (ce)   at (120:5.8cm) {$C_E$};
 
-    % Relationships
     \draw[directRel] (vcc) to (ic);
     \draw[tradeRel]  (vbe) to (ic);
     \draw[directRel, bend right=10] (beta) to (ic);
@@ -1438,36 +1514,71 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[tradeRel, bend right=10]  (r1) to (ib);
     \draw[directRel, bend left=10]  (r2) to (ic);
     \draw[tradeRel]  (re) to (ie);
-    % R3 is the current mirror reference: sets mirror current (no direct row in table)
 
     \draw[directRel] (ic) to (ptot);
     \draw[tradeRel]  (ic) to (av);
+    \draw[tradeRel]  (ic) to (bw); 
     \draw[tradeRel]  (ib) to (zin);
 
-    % Circuit C Unique: V_CC directly affects V_swing (VCC up -> Vswing up for C)
+    % Unique C rules from table
     \draw[directRel, bend left=45] (vcc) to (vswing);
-    % Circuit C Unique: R_E directly affects V_swing (RE up -> Vswing up for C)
     \draw[directRel, bend right=20] (re) to (vswing);
-    % R_C (R3 used as reference, no R_C in Circuit C) has NO effect on output
 
     \draw[directRel, bend right=10] (vt) to (bw);
     \draw[tradeRel, bend left=15]   (rl) to (av);
     \draw[directRel, bend right=15] (rl) to (zout);
     \draw[directRel, bend right=15] (ce) to (bw);
-    \draw[directRel, bend left=10]  (cin) to (bw);  % C_in up -> BW up
-    \draw[directRel, bend right=10] (cc) to (bw);   % C_C up -> BW up
+    \draw[directRel, bend left=10]  (cin) to (bw);  
+    \draw[directRel, bend right=10] (cc) to (bw);   
 
-    % Legend
+    \draw[directRel, bend left=20]  (bw) to (av);      
+    \draw[directRel, bend right=35] (bw) to (zin);     
+
     \matrix [legendBox] at (0, -7.5) {
         \draw[directRel] (0,0) -- (1,0); & \node {Direct Relationship (Move together)}; \\
         \draw[tradeRel] (0,0) -- (1,0); & \node {Inverse Relationship (Trade-off)}; \\
     };
+
+    % ==========================================
+    % DIAGRAM 2: POLYGON C (Right Side)
+    % ==========================================
+    \begin{scope}[shift={(13.5,0)}]
+        \node[font=\Large\bfseries] at (0, 7.8) {Performance Metrics (Table Mapped)};
+
+        \node[polyNode] (p_pd) at (90:4cm) {Power\\Dissipation};
+        \node[polyNode] (p_vs) at (18:4cm) {Voltage\\Swings};
+        \node[polyNode] (p_bw) at (306:4cm) {Bandwidth};
+        \node[polyNode] (p_gain) at (234:4cm) {Gain};
+        \node[polyNode] (p_io) at (162:4cm) {Input/Output\\Impedance};
+
+        % 1. Power moves WITH V_swing in Circuit C table
+        \draw[polyDirect] (p_pd) -- (p_vs);
+        
+        % 2. Power Trades off with Gain/BW/Impedance
+        \draw[polyTrade] (p_pd) -- (p_gain);
+        \draw[polyTrade] (p_pd) -- (p_bw);
+        \draw[polyTrade] (p_pd) -- (p_io);
+
+        % 3. V_swing Trades off with Gain/BW/Impedance
+        \draw[polyTrade] (p_vs) -- (p_gain);
+        \draw[polyTrade] (p_vs) -- (p_bw);
+        \draw[polyTrade] (p_vs) -- (p_io);
+
+        % 4. Gain/BW/Impedance move together
+        \draw[polyDirect] (p_gain) -- (p_bw);
+        \draw[polyDirect] (p_gain) -- (p_io);
+        \draw[polyDirect] (p_bw) -- (p_io);
+        
+        \node[font=\large] at (0, -5.5) {Fig. 3. Circuit C Performance trade-off polygon};
+    \end{scope}
 \end{tikzpicture}
+
+The detailed diagram for Circuit C reveals a fundamental shift: Voltage Swing ($V_{swing}$) is no longer inversely tied to $I_C$. Instead, as seen by the direct lines, an increase in variables like $V_{CC}$ drives both Power ($P_{total}$) and Voltage Swing ($V_{swing}$) up simultaneously. Because they rise together, the simplified polygon connects Power and Voltage Swing with a direct relationship (blue solid line). Meanwhile, the $I_C$ increase still suppresses Gain, Bandwidth, and Impedance. Consequently, both Power and Voltage Swing share inverse trade-offs (red dashed lines) with the Gain/Bandwidth/Impedance block. Because Gain, Bandwidth, and Impedance continue to be pushed down together by $I_C$, they remain connected to one another by direct relationships (blue solid lines).
 
 \subsection*{PSpice Simulation}
 \addcontentsline{toc}{subsection}{PSpice Simulation}
 Based on the Performance Polygon drawn above, a PSpice Analysis is conducted to test whether if the Performance Polygon is accurate.
-For simplicity sake, all resistors are set to 1k$\Omega$, all capacitors are set to 10$\mu$F, $V_{CC}$ is 10V, and $\beta$ is 100.
+The resistors are finely tuned to ensure that all three circuits are operating under the same power dissipation, as requested from the assignment instructions.
 
 The following are the circuit diagrams and the simulation result of the three Circuits.
 
@@ -1492,7 +1603,7 @@ The following are the circuit diagrams and the simulation result of the three Ci
 
 \begin{table}[htbp]
     \centering
-    \caption{DC Operating Point Values}
+    \caption{DC Operating Point Values -- Circuit A}
     \vspace{0.5em}
     \renewcommand{\arraystretch}{1.2}
     \begin{tabular}{cc}
@@ -1500,14 +1611,14 @@ The following are the circuit diagrams and the simulation result of the three Ci
         \textbf{Symbol} & \textbf{Value} \\
         \hline
         $V_{CC}$ & $10.00\text{ V}$ \\
-        $V_B$ & $4.987\text{ V}$ \\
-        $V_C$ & $5.722\text{ V}$ \\
-        $V_E$ & $4.304\text{ V}$ \\
-        $V_{BE}$ & $0.683\text{ V}$ \\
-        $V_{CE}$ & $1.418\text{ V}$ \\
-        $I_B$ & $25.46\ \mu\text{A}$ \\
-        $I_C$ & $4.278\text{ mA}$ \\
-        $I_E$ & $4.304\text{ mA}$ \\
+        $V_B$ & $3.047\text{ V}$ \\
+        $V_C$ & $7.634\text{ V}$ \\
+        $V_E$ & $2.380\text{ V}$ \\
+        $V_{BE}$ & $0.667\text{ V}$ \\
+        $V_{CE}$ & $5.254\text{ V}$ \\
+        $I_B$ & $14.04\ \mu\text{A}$ \\
+        $I_C$ & $2.366\text{ mA}$ \\
+        $I_E$ & $2.380\text{ mA}$ \\
         \hline
     \end{tabular}
     \label{tab:dc_bias_short}
@@ -1548,7 +1659,7 @@ The following are the circuit diagrams and the simulation result of the three Ci
 
 \begin{table}[htbp]
     \centering
-    \caption{DC Operating Point Values}
+    \caption{DC Operating Point Values -- Circuit B}
     \vspace{0.5em}
     \renewcommand{\arraystretch}{1.2}
     \begin{tabular}{cc}
@@ -1556,14 +1667,14 @@ The following are the circuit diagrams and the simulation result of the three Ci
         \textbf{Symbol} & \textbf{Value} \\
         \hline
         $V_{CC}$ & $10.00\text{ V}$ \\
-        $V_B$ & $4.993\text{ V}$ \\
-        $V_C$ & $7.849\text{ V}$ \\
-        $V_E$ & $4.328\text{ V}$ \\
-        $V_{BE}$ & $0.665\text{ V}$ \\
-        $V_{CE}$ & $3.521\text{ V}$ \\
-        $I_B$ & $13.13\ \mu\text{A}$ \\
-        $I_C$ & $2.151\text{ mA}$ \\
-        $I_E$ & $2.164\text{ mA}$ \\
+        $V_B$ & $5.371\text{ V}$ \\
+        $V_C$ & $7.663\text{ V}$ \\
+        $V_E$ & $4.704\text{ V}$ \\
+        $V_{BE}$ & $0.667\text{ V}$ \\
+        $V_{CE}$ & $2.959\text{ V}$ \\
+        $I_B$ & $14.27\ \mu\text{A}$ \\
+        $I_C$ & $2.337\text{ mA}$ \\
+        $I_E$ & $2.352\text{ mA}$ \\
         \hline
     \end{tabular}
     \label{tab:dc_bias_circuit2}
@@ -1605,7 +1716,7 @@ The following are the circuit diagrams and the simulation result of the three Ci
 
 \begin{table}[htbp]
     \centering
-    \caption{DC Operating Point Values}
+    \caption{DC Operating Point Values -- Circuit C}
     \vspace{0.5em}
     \renewcommand{\arraystretch}{1.2}
     \begin{tabular}{cc}
@@ -1616,21 +1727,21 @@ The following are the circuit diagrams and the simulation result of the three Ci
         \hline
         \multicolumn{2}{c}{\textbf{Main Amplifier (Q1 - NPN)}} \\
         \hline
-        $V_{B1}$ & $4.988\text{ V}$ \\
-        $V_{C1}$ & $9.970\text{ V}$ \\
-        $V_{E1}$ & $4.306\text{ V}$ \\
-        $V_{BE1}$ & $0.682\text{ V}$ \\
-        $V_{CE1}$ & $5.664\text{ V}$ \\
-        $I_{B1}$ & $24.20\ \mu\text{A}$ \\
-        $I_{C1}$ & $4.281\text{ mA}$ \\
-        $I_{E1}$ & $4.306\text{ mA}$ \\
+        $V_{B1}$ & $1.690\text{ V}$ \\
+        $V_{C1}$ & $3.532\text{ V}$ \\
+        $V_{E1}$ & $1.044\text{ V}$ \\
+        $V_{BE1}$ & $0.646\text{ V}$ \\
+        $V_{CE1}$ & $2.488\text{ V}$ \\
+        $I_{B1}$ & $6.841\ \mu\text{A}$ \\
+        $I_{C1}$ & $1.037\text{ mA}$ \\
+        $I_{E1}$ & $1.044\text{ mA}$ \\
         \hline
         \multicolumn{2}{c}{\textbf{Active Load (Q2 \& Q3 - PNP)}} \\
         \hline
-        $V_{EB2}$ & $0.782\text{ V}$ \\
-        $V_{EC2}$ & $0.030\text{ V}$ \\
-        $I_{C2}$ & $4.281\text{ mA}$ \\
-        $I_{C3}$ & $8.578\text{ mA}$ \\
+        $V_{EB2}$ & $0.725\text{ V}$ \\
+        $V_{EC2}$ & $6.468\text{ V}$ \\
+        $I_{C2}$ & $1.042\text{ mA}$ \\
+        $I_{C3}$ & $988.22\ \mu\text{A}$ \\
         \hline
     \end{tabular}
     \label{tab:dc_bias_circuit3}
@@ -1663,48 +1774,48 @@ The DC analysis from PSpice produced the following measured values:
 
 \begin{table}[H]
     \centering
-    \caption{Measured DC operating points from PSpice (all resistors 1\,k$\Omega$, $V_{CC}=10\,\text{V}$, $\beta=100$).}
+    \caption{Measured DC operating points from PSpice ($V_{CC}=10\,\text{V}$).}
     \renewcommand{\arraystretch}{1.3}
     \begin{tabular}{lcccc}
         \toprule
         \textbf{Parameter} & \textbf{Circuit A} & \textbf{Circuit B} & \textbf{Circuit C (Q1)} \\
         \midrule
-        $V_{BE}$ & 0.683\,V & 0.665\,V & 0.682\,V \\
-        $V_{CE}$ & 1.418\,V & 3.521\,V & 5.664\,V \\
-        $I_B$    & 25.46\,$\mu$A  & 13.13\,$\mu$A  & 24.20\,$\mu$A  \\
-        $I_C$    & 4.278\,mA & 2.151\,mA & 4.281\,mA \\
-        $I_E$    & 4.304\,mA & 2.164\,mA & 4.306\,mA \\
+        $V_{BE}$ & 0.667\,V & 0.667\,V & 0.646\,V \\
+        $V_{CE}$ & 5.254\,V & 2.959\,V & 2.488\,V \\
+        $I_B$    & 14.04\,$\mu$A & 14.27\,$\mu$A & 6.841\,$\mu$A  \\
+        $I_C$    & 2.366\,mA & 2.337\,mA & 1.037\,mA \\
+        $I_E$    & 2.380\,mA & 2.352\,mA & 1.044\,mA \\
         \bottomrule
     \end{tabular}
     \label{tab:dc_comparison}
 \end{table}
 
 \paragraph{Circuit A: }
-Circuit A has the highest $I_C$ with the lowest $V_{CE}$. From the concept of voltage swing, this means that the transistor sits close to the boundary between active and saturation region. Meaning, it has the lowest voltage swing. This is shown in the output graph as well, which looks almost flat. Because $I_C$ is the highest, the total power drawn from the supply is also the highest ($P_{total}$ = $V_{CC} \times I_{total}$), and $I_C$ is the greatest contributor to $I_{total}$
+Circuit A is properly biased in the active region with $V_{CE} = 5.254$\,V, which sits perfectly near the middle of the load line ($V_{CC}/2 = 5$\,V). This provides excellent symmetrical voltage swing. The collector current is 2.366\,mA. The total power drawn from the supply is approximately 30\,mW ($I_{total} \approx 3.028$\,mA).
 
 \paragraph{Circuit B}
-By splitting the emitter resistor into $R_{E1}$ and $R_{E2}$, we get a higher $V_{CE}$ while halving $I_C$. The higher $V_{CE}$ means that the output has higher voltage swing, and lower $I_C$ means less power wasted.
+Circuit B is also well-biased in the active region with $V_{CE} = 2.959$\,V. The base voltage is $V_B = 5.371$\,V. The emitter degeneration is effectively split ($R_{E1}=R_{E2}=1$\,k$\Omega$), and the collector current is highly similar to Circuit A at $I_C = 2.337$\,mA. Just like Circuit A, the bias resistors were selected to ensure the total supply current matches closely ($I_{total} \approx 2.999$\,mA), meaning its overall power dissipation is practically identical to Circuit A.
 
 \paragraph{Circuit C}
-From the DC analysis above, it can be seen that $I_C$ for Circuit C is almost similar to that of Circuit A, while it has the highest $V_{CE}$. This shows that Circuit C has the highest voltage swing while also having the highest power consumption.
+Circuit C is now properly biased into the active region ($V_{CE} = 2.488$\,V). The collector current is lower ($I_C = 1.037$\,mA), supported by the PNP active load mirror. Because of the sophisticated active load, the bias network could be designed with larger resistors ($R_1 = 8.3$\,k$\Omega$, $R_5 = 9.3$\,k$\Omega$), allowing the circuit to maintain a consistent overall supply current ($I_{total} \approx 3.036$\,mA) that perfectly matches the $\approx$ 30\,mW total power constraint of the other two circuits.
 
 \subsubsection*{5.1.2 AC Performance Trade-offs}
 Using the small signal T model, we managed to derive various mathematical equations describing different attributes of the circuit in terms of controllable variables (R, C, etc). A simulation website is developed to analyze the relationship between the derived attributes, and a performance polygon is created based on the analysis. The following is the summary of the entire analysis finding.
 
 \begin{table}[H]
     \centering
-    \caption{Qualitative AC performance ranking across the three topologies (H = High, M = Medium, L = Low).}
+    \caption{Qualitative AC performance ranking across the three topologies (H = High, M = Medium, L = Low, Same = Identical).}
     \renewcommand{\arraystretch}{1.3}
     \begin{tabular}{lcccc}
         \toprule
         \textbf{Metric} & \textbf{Circuit A} & \textbf{Circuit B} & \textbf{Circuit C} \\
         \midrule
-        Voltage Gain $|A_v|$ & H & M & H \\
-        Bandwidth $BW$       & M & L & M \\
+        Voltage Gain $|A_v|$ & H & L & H \\
+        Bandwidth $BW$       & M & H & L \\
         Input Impedance $Z_{in}$ & L & H & L \\
-        Output Impedance $Z_{out}$ & M & M & L \\
-        Voltage Swing $V_{swing}$ & L & M & H \\
-        Quiescent Power $P_{total}$ & H & L & H \\
+        Output Impedance $Z_{out}$ & M & M & H \\
+        Voltage Swing $V_{swing}$ & H & M & M \\
+        Quiescent Power $P_{total}$ & Same & Same & Same \\
         Gain--Bandwidth Stability & L & H & M \\
         \bottomrule
     \end{tabular}
@@ -1712,19 +1823,19 @@ Using the small signal T model, we managed to derive various mathematical equati
 \end{table}
 
 \paragraph{Voltage Gain:}
-Circuit A achieves high gain because $A_v \approx -\frac{\alpha}{r_e}(R_C \| R_L)$ and $r_e$ is very small when $I_C$ is large.
-Circuit B intentionally trades gain for stability because of $R_{E1}$, which appears in the denominator of the gain equation, hence reducing the gain. Circuit C replaces $R_C$ with two mirrorred transistors, which had been analyzed to have the effect of driving the voltage gain very high.
+Circuit A achieves high gain (32.96\,dB) because $A_v \approx -\frac{\alpha}{r_e}(R_C \| R_L)$ and $r_e$ is very small when $I_C$ is large.
+Circuit B intentionally trades gain for stability and bandwidth using $R_{E1}$, which appears in the denominator of the gain equation. This degeneration is so severe that it actually attenuates the signal ($-0.57$\,dB). Circuit C replaces $R_C$ with an active load mirror, which drives the voltage gain very high (31.82\,dB) even with a smaller $I_C$.
 
 \paragraph{Bandwidth:}
-From the analysis, we can see that the bandwidth can be independently tuned by using $C_{in}, C_C, C_E$. This makes sense because bandwidth in its entirety is just about the allowed frequency of amplification, and the frequency is solely controlled by the frequency of the capacitors.
+Because Circuit B heavily degenerates its gain, it achieves a massive bandwidth extension (65.75\,MHz). Circuit A sits in the middle (39.8\,MHz), while Circuit C has the narrowest bandwidth (8.52\,MHz). This clearly demonstrates the fundamental gain--bandwidth product trade-off inherent in amplifier design.
 
 \paragraph{Input Impedance.}
-$Z_{in} = (1+\beta)r_e$ for Circuit A.
+$Z_{in} = R_{TH} \| (1+\beta)r_e$ for Circuit A.
 Because $r_e = V_T / I_E$ and $I_E$ is large, $r_e$ is small, making $Z_{in}$ small.
-Circuit B adds $R_{E1}$ in series which increases its $Z_{in}$. This means that Circuit B does not load the signal source as much as Circuit A.
+Circuit B adds $R_{E1}$ in series which significantly increases its $Z_{in} \approx R_{TH} \| (1+\beta)(r_e + R_{E1})$. This means that Circuit B does not load the signal source nearly as much as Circuit A.
 
 \paragraph{Output Impedance:}
-Both Circuit A and Circuit B have the same output impedance, while Circuit C only has $Z_{out} = R_L$ which is lower. This means Circuit C can drive larger loads without significant voltage drop.
+Both Circuit A and Circuit B have the same moderate output impedance ($Z_{out} \approx R_C = 1\,\text{k}\Omega$). In contrast, Circuit C has a very \textbf{high} intrinsic output impedance because an active load current mirror acts as a high-impedance current source ($Z_{out} \approx r_{o1} \| r_{o2}$). Because of this high output impedance, Circuit C is highly susceptible to loading effects and typically requires a buffer stage (like an emitter follower) to successfully drive low-resistance loads without a massive voltage drop.
 
 \subsubsection*{5.1.3 Metric Polygon Observations}
 A few key observations from the metric polygon:
@@ -1734,8 +1845,7 @@ A few key observations from the metric polygon:
 
     \item \textbf{$C_E, C_{in}, C_C$ are free parameters for bandwidth.} Increasing $C_E, C_{in}, C_C$ improves $BW$ in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$.
 
-    \item \textbf{Circuit B's $R_1$ suppresses $BW$.} In Circuit B, increasing $R_1$ reduces $BW$ (in addition to reducing $I_C$), whereas in Circuit A this effect is absent.
-    This is because the larger Th\'{e}venin resistance $R_{TH} = R_1 \| R_2$ interacts with the effective emitter resistance $R_{E1} + r_e$ in the bandwidth calculation.
+    \item \textbf{Emitter Degeneration Extends Bandwidth.} The defining feature of Circuit B is its emitter degeneration resistor ($R_{E1}$). By providing strong negative feedback, it dramatically suppresses voltage gain but proportionally extends the bandwidth, allowing it to achieve the highest operating frequency of all three designs.
 \end{itemize}
 
 \subsection*{5.2 Sustainable Design Analysis}
@@ -1746,11 +1856,7 @@ In electronics, sustainable design means choosing circuit designs that minimise 
 \subsubsection*{5.2.1 Power Efficiency}
 
 \begin{itemize}
-    \item For power efficiency, \textbf{Circuit B} has the lower collector current, which as analyzed above, has the lowest power wastage hence the most efficient in terms of power use.
-
-    \item \textbf{Circuit C} adds to extra PNP transistors, which draws more power, making it to least power-efficient. As seen in the DC result, it also has the highest IC.
-
-    \item \textbf{Circuit A} has similar power consumption to \text{Circuit C}, but because of its low Voltage Swing, this means that most of the transistor's power is spent in a very thin active region. 
+    \item For overall power efficiency, \textbf{all three circuits} have been carefully matched to draw nearly identical total supply current ($I_{total} \approx 3.0$\,mA) from the 10\,V source. This ensures their total power dissipation ($P_{total} = V_{CC} \times I_{total}$) is practically identical at approximately 30\,mW. Hence, the power efficiency is not the defining factor of sustainable design in this scenario.
 \end{itemize}
 
 \subsubsection*{5.2.2 Thermal Stability and Reliability}
@@ -1765,16 +1871,18 @@ To analyze temperature, we need to look at the power dissipated inside the trans
         \toprule
         \textbf{Parameter} & \textbf{Circuit A} & \textbf{Circuit B} & \textbf{Circuit C (Q1)} \\
         \midrule
-        $V_{CE}$ & 1.418\,V & 3.521\,V & 5.664\,V \\
-        $I_C$    & 4.278\,mA & 2.151\,mA & 4.281\,mA \\
-        $P_{transistor}$ & \textbf{6.07\,mW} & \textbf{7.57\,mW} & \textbf{24.25\,mW} \\
+        $V_{CE}$ & 5.254\,V & 2.959\,V & 2.488\,V \\
+        $I_C$    & 2.366\,mA & 2.337\,mA & 1.037\,mA \\
+        $P_{transistor}$ & \textbf{12.43\,mW} & \textbf{6.915\,mW} & \textbf{2.580\,mW} \\
         \bottomrule
     \end{tabular}
     \label{tab:power_transistor}
 \end{table}
 
 \begin{itemize}
-    \item From the results above, it can be seen that \textbf{Circuit A} dissipates the least heat, making it the most favorable, followed by \textbf{Circuit B} and then \textbf{Circuit C}.
+    \item \textbf{Circuit A} dissipates the most heat at the Q1 junction (12.43\,mW) because its $V_{CE}$ is the highest.
+    \item \textbf{Circuit B} reduces this dissipation to 6.915\,mW by dropping some of the excess voltage across the emitter degeneration resistors rather than across the transistor junction itself.
+    \item \textbf{Circuit C} dissipates the least transistor heat (2.580\,mW) because it operates at a much lower $I_C$, proving to be the most thermally efficient and reliable design for the primary transistor.
 \end{itemize}
 
 \subsubsection*{5.2.3 Component Count and Complexity}
@@ -1783,6 +1891,7 @@ Sustainable design also factors in how many components are used. In this case, C
 
 \begin{itemize}
     \item \textbf{Circuit B} achieves its improved stability and sustainability by only the cost of one extra resistor, which is an excellent trade off.
+    \item \textbf{Circuit C}, although dissipates the least heat while obtaining a high voltage gain and good voltage swing, it adds two extra transistors compared to A and B, making it the most complex and least sustainable design.
 \end{itemize}
 
 \subsection*{5.3 Conclusion}
@@ -1791,11 +1900,11 @@ Sustainable design also factors in how many components are used. In this case, C
 This study compared three CE amplifier configurations --- passive resistive (A), emitter degeneration (B), and active loading (C) --- through theoretical derivation, computer-aided metric-polygon simulation, and PSpice verification.
 
 \begin{enumerate}
-    \item From the analysis above, it can be seen that from a purely sustainability standpoint, \textbf{Circuit B is the most sustainable design} because it draws the least power, provides strong thermal stability, while just adding one additional resistor compared to Circuit A.
+    \item From the analysis above, it can be seen that from a purely sustainability standpoint, \textbf{Circuit B is the most sustainable design} because under the same power dissipation, it provides strong voltage gain and bandwidth, maintaining good thermal stability, while only costing one additional resistor compared to Circuit A.
 
-    \item \textbf{Circuit C delivers the best performance} in terms of voltage gain and voltage swing, while having the lowest output impedance, but at the highest power and complexity cost. Circuit C is best suited for high-performance IC where power is not the primary constraint.
+    \item \textbf{Circuit C delivers the best performance} in terms of voltage swing, voltage gain, and thermal stability, but at the cost of high transistor count. Hence, it is only suitable for high-performance devices that doesn't factor in circuit complexity and component costs.
 
-    \item \textbf{Circuit A is the simplest baseline}. It provides the best gain with the fewest parts, but offers low thermal stability and operates at the lowest voltage swing, making it hard to operate at various voltages.
+    \item \textbf{Circuit A is the simplest baseline}. It provides the best gain with the fewest parts, but offers low thermal stability.
 \end{enumerate}
 
 \section*{Appendix}

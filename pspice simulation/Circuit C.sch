@@ -1,4 +1,4 @@
-*version 9.1 625220548
+*version 9.1 14880921
 u 181
 R? 6
 C? 4
@@ -7,11 +7,11 @@ Q? 4
 ? 3
 @libraries
 @analysis
-.AC 1 3 0
+.AC 0 3 0
 +0 101
 +1 10
-+2 100Meg
-.TRAN 0 0 0 0
++2 1000Meg
+.TRAN 1 0 0 0
 +0 10us
 +1 5ms
 +2 0
@@ -29,10 +29,10 @@ connectViaLocalLabels 0
 NoStim4ExtIFPortsWarnings 1
 AutoGenStim4ExtIFPorts 1
 @index
-pageloc 1 0 5968 
+pageloc 1 0 6460 
 @status
-n 0 126:04:07:22:01:27;1778162487 e 
-s 0 126:04:07:22:01:31;1778162491 e 
+n 0 126:04:14:18:25:28;1778754328 e 
+s 0 126:04:14:18:25:31;1778754331 e 
 *page 1 0 970 720 iA
 @ports
 port 12 GND_EARTH 120 490 h
@@ -42,18 +42,6 @@ port 15 GND_EARTH 250 490 h
 port 16 GND_EARTH 300 400 h
 port 17 GND_EARTH 340 400 h
 @parts
-part 3 r 120 460 v
-a 0 sp 0 0 0 10 hlb 100 PART=r
-a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
-a 0 s 0:13 0 0 0 hln 100 GATE=
-a 0 a 0:13 0 0 0 hln 100 PKGREF=R2
-a 0 ap 9 0 15 0 hln 100 REFDES=R2
-part 2 r 120 350 v
-a 0 sp 0 0 0 10 hlb 100 PART=r
-a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
-a 0 s 0:13 0 0 0 hln 100 GATE=
-a 0 a 0:13 0 0 0 hln 100 PKGREF=R1
-a 0 ap 9 0 15 0 hln 100 REFDES=R1
 part 18 Q2N2222 160 380 h
 a 0 sp 11 0 25 40 hln 100 PART=Q2N2222
 a 0 s 0:13 0 0 0 hln 100 PKGTYPE=TO-18
@@ -78,12 +66,6 @@ a 0 s 0:13 0 0 0 hln 100 PKGTYPE=TO-18
 a 0 s 0:13 0 0 0 hln 100 GATE=
 a 0 a 0:13 0 0 0 hln 100 PKGREF=Q3
 a 0 ap 9 0 5 5 hln 100 REFDES=Q3
-part 6 r 300 370 v
-a 0 sp 0 0 0 10 hlb 100 PART=r
-a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
-a 0 s 0:13 0 0 0 hln 100 GATE=
-a 0 a 0:13 0 0 0 hln 100 PKGREF=R5
-a 0 ap 9 0 15 0 hln 100 REFDES=R5
 part 7 c 70 380 h
 a 0 sp 0 0 0 10 hlb 100 PART=c
 a 0 s 0:13 0 0 0 hln 100 PKGTYPE=CK05
@@ -123,15 +105,48 @@ a 1 u 0 0 0 0 hcn 100 VOFF=0
 a 1 u 0 0 0 0 hcn 100 VAMPL=10m
 a 1 u 0 0 0 0 hcn 100 FREQ=1k
 a 1 u 0 0 0 0 hcn 100 AC=1V
+part 2 r 120 350 v
+a 0 sp 0 0 0 10 hlb 100 PART=r
+a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
+a 0 s 0:13 0 0 0 hln 100 GATE=
+a 0 a 0:13 0 0 0 hln 100 PKGREF=R1
+a 0 ap 9 0 15 0 hln 100 REFDES=R1
+a 0 u 13 0 15 25 hln 100 VALUE=8.3k
+part 3 r 120 460 v
+a 0 sp 0 0 0 10 hlb 100 PART=r
+a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
+a 0 s 0:13 0 0 0 hln 100 GATE=
+a 0 a 0:13 0 0 0 hln 100 PKGREF=R2
+a 0 ap 9 0 15 0 hln 100 REFDES=R2
+a 0 u 13 0 15 25 hln 100 VALUE=1.7k
+part 6 r 300 370 v
+a 0 sp 0 0 0 10 hlb 100 PART=r
+a 0 s 0:13 0 0 0 hln 100 PKGTYPE=RC05
+a 0 s 0:13 0 0 0 hln 100 GATE=
+a 0 a 0:13 0 0 0 hln 100 PKGREF=R5
+a 0 ap 9 0 15 0 hln 100 REFDES=R5
+a 0 u 13 0 15 25 hln 100 VALUE=9.3k
 part 1 titleblk 970 720 h
 a 1 s 13 0 350 10 hcn 100 PAGESIZE=A
 a 1 s 13 0 180 60 hcn 100 PAGETITLE=
-a 1 s 13 0 300 95 hrn 100 PAGENO=1
 a 1 s 13 0 340 95 hrn 100 PAGECOUNT=1
+a 1 s 13 0 300 95 hrn 100 PAGENO=1
 part 179 nodeMarker 250 350 h
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
 a 0 s 0 0 0 0 hln 100 PROBEVAR=
 a 0 a 0 0 4 22 hlb 100 LABEL=1
 part 180 nodeMarker 40 380 h
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
+a 0 s 0 0 0 0 hln 100 PROBEVAR=
 a 0 s 0 0 0 0 hln 100 PROBEVAR=
 a 0 a 0 0 4 22 hlb 100 LABEL=2
 @conn

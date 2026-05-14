@@ -1,12 +1,12 @@
 * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
 
 * Schematics Version 9.1 - Web Update 1
-* Thu May 07 22:01:27 2026
+* Thu May 14 18:25:28 2026
 
 
 
 ** Analysis setup **
-.ac DEC 101 10 100Meg
+.tran 10us 5ms 0 10us
 .OP 
 
 

@@ -1,13 +1,14 @@
 * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit A.sch
 
 * Schematics Version 9.1 - Web Update 1
-* Thu May 07 21:23:38 2026
+* Thu May 14 18:09:24 2026
 
 
 
 ** Analysis setup **
 .ac DEC 100 10 100Meg
 .OP 
+.STMLIB "Circuit A.stl"
 
 
 * From [PSPICE NETLIST] section of pspiceev.ini:

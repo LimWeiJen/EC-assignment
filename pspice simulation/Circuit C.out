@@ -1,5 +1,5 @@
 
-**** 05/07/26 22:01:31 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:25:31 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
 
@@ -13,12 +13,12 @@
 
 
 * Schematics Version 9.1 - Web Update 1
-* Thu May 07 22:01:27 2026
+* Thu May 14 18:25:28 2026
 
 
 
 ** Analysis setup **
-.ac DEC 101 10 100Meg
+.tran 10us 5ms 0 10us
 .OP 
 
 
@@ -32,20 +32,20 @@
 
 
 
-R_R2         0 $N_0001  1k  
-R_R1         $N_0001 $N_0002  1k  
-Q_Q1         $N_0003 $N_0001 $N_0004 Q2N2222
-R_R3         0 $N_0004  1k  
-Q_Q2         $N_0003 $N_0005 $N_0002 Q2N2907A
-Q_Q3         $N_0005 $N_0005 $N_0002 Q2N2907A
-R_R5         0 $N_0005  1k  
+Q_Q1         $N_0002 $N_0001 $N_0003 Q2N2222
+R_R3         0 $N_0003  1k  
+Q_Q2         $N_0002 $N_0004 $N_0005 Q2N2907A
+Q_Q3         $N_0004 $N_0004 $N_0005 Q2N2907A
 C_C1         $N_0006 $N_0001  10u  
-C_C2         0 $N_0004  10u  
-C_C3         $N_0007 $N_0003  10u  
-V_V1         $N_0002 0 10V
+C_C2         0 $N_0003  10u  
+C_C3         $N_0007 $N_0002  10u  
+V_V1         $N_0005 0 10V
 R_R4         0 $N_0007  1k  
 V_V2         $N_0006 0  AC 1V
 +SIN 0 10m 1k 0 0 0
+R_R1         $N_0001 $N_0005  8.3k  
+R_R2         0 $N_0001  1.7k  
+R_R5         0 $N_0004  9.3k  
 
 **** RESUMING "Circuit C.cir" ****
 .INC "Circuit C.als"
@@ -56,19 +56,19 @@ V_V2         $N_0006 0  AC 1V
 * Schematics Aliases *
 
 .ALIASES
-R_R2            R2(1=0 2=$N_0001 )
-R_R1            R1(1=$N_0001 2=$N_0002 )
-Q_Q1            Q1(c=$N_0003 b=$N_0001 e=$N_0004 )
-R_R3            R3(1=0 2=$N_0004 )
-Q_Q2            Q2(c=$N_0003 b=$N_0005 e=$N_0002 )
-Q_Q3            Q3(c=$N_0005 b=$N_0005 e=$N_0002 )
-R_R5            R5(1=0 2=$N_0005 )
+Q_Q1            Q1(c=$N_0002 b=$N_0001 e=$N_0003 )
+R_R3            R3(1=0 2=$N_0003 )
+Q_Q2            Q2(c=$N_0002 b=$N_0004 e=$N_0005 )
+Q_Q3            Q3(c=$N_0004 b=$N_0004 e=$N_0005 )
 C_C1            C1(1=$N_0006 2=$N_0001 )
-C_C2            C2(1=0 2=$N_0004 )
-C_C3            C3(1=$N_0007 2=$N_0003 )
-V_V1            V1(+=$N_0002 -=0 )
+C_C2            C2(1=0 2=$N_0003 )
+C_C3            C3(1=$N_0007 2=$N_0002 )
+V_V1            V1(+=$N_0005 -=0 )
 R_R4            R4(1=0 2=$N_0007 )
 V_V2            V2(+=$N_0006 -=0 )
+R_R1            R1(1=$N_0001 2=$N_0005 )
+R_R2            R2(1=0 2=$N_0001 )
+R_R5            R5(1=0 2=$N_0004 )
 .ENDALIASES
 
 
@@ -78,7 +78,7 @@ V_V2            V2(+=$N_0006 -=0 )
 
 .END
 
-**** 05/07/26 22:01:31 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:25:31 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
 
@@ -118,7 +118,7 @@ V_V2            V2(+=$N_0006 -=0 )
            D     .87             .52         
 
 
-**** 05/07/26 22:01:31 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:25:31 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
 
@@ -133,11 +133,11 @@ V_V2            V2(+=$N_0006 -=0 )
  NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
 
 
-($N_0001)    4.9879                   ($N_0002)   10.0000                       
+($N_0001)    1.6903                   ($N_0002)    3.5324                       
 
-($N_0003)    9.9652                   ($N_0004)    4.3056                       
+($N_0003)    1.0441                   ($N_0004)    9.2745                       
 
-($N_0005)    9.2181                   ($N_0006)    0.0000                       
+($N_0005)   10.0000                   ($N_0006)    0.0000                       
 
 ($N_0007)    0.0000                   
 
@@ -147,13 +147,13 @@ V_V2            V2(+=$N_0006 -=0 )
     VOLTAGE SOURCE CURRENTS
     NAME         CURRENT
 
-    V_V1        -1.851E-02
+    V_V1        -3.036E-03
     V_V2         0.000E+00
 
-    TOTAL POWER DISSIPATION   1.85E-01  WATTS
+    TOTAL POWER DISSIPATION   3.04E-02  WATTS
 
 
-**** 05/07/26 22:01:31 *********** Evaluation PSpice (Nov 1999) **************
+**** 05/14/26 18:25:31 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
 
@@ -173,26 +173,61 @@ V_V2            V2(+=$N_0006 -=0 )
 
 NAME         Q_Q1        Q_Q2        Q_Q3      
 MODEL        Q2N2222     Q2N2907A    Q2N2907A  
-IB           2.42E-05   -6.02E-04   -3.81E-05 
-IC           4.28E-03   -4.28E-03   -8.58E-03 
-VBE          6.82E-01   -7.82E-01   -7.82E-01 
-VBC         -4.98E+00   -7.47E-01    0.00E+00 
-VCE          5.66E+00   -3.48E-02   -7.82E-01 
-BETADC       1.77E+02    7.11E+00    2.25E+02 
-GM           1.63E-01    1.86E-01    3.29E-01 
-RPI          1.16E+03    8.51E+02    6.85E+02 
+IB           6.84E-06   -4.52E-06   -4.52E-06 
+IC           1.04E-03   -1.04E-03   -9.88E-04 
+VBE          6.46E-01   -7.26E-01   -7.26E-01 
+VBC         -1.84E+00    5.74E+00    0.00E+00 
+VCE          2.49E+00   -6.47E+00   -7.26E-01 
+BETADC       1.52E+02    2.29E+02    2.19E+02 
+GM           3.99E-02    4.01E-02    3.82E-02 
+RPI          4.19E+03    5.87E+03    5.87E+03 
 RX           1.00E+01    1.00E+01    1.00E+01 
-RO           1.85E+04    1.29E+01    1.35E+04 
-CBE          1.05E-10    1.93E-10    2.33E-10 
-CBC          3.65E-12    8.80E-09    1.48E-11 
+RO           7.31E+04    1.17E+05    1.17E+05 
+CBE          5.28E-11    5.70E-11    5.59E-11 
+CBC          4.78E-12    4.62E-12    1.48E-11 
 CJS          0.00E+00    0.00E+00    0.00E+00 
-BETAAC       1.90E+02    1.59E+02    2.25E+02 
+BETAAC       1.68E+02    2.35E+02    2.24E+02 
 CBX/CBX2     0.00E+00    0.00E+00    0.00E+00 
-FT/FT2       2.40E+08    3.30E+06    2.11E+08 
+FT/FT2       1.10E+08    1.03E+08    8.59E+07 
+
+
+**** 05/14/26 18:25:31 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Lim Wei Jen\Documents\UM Programming\latex template\EC assignment - New\pspice simulation\Circuit C.sch
+
+
+ ****     INITIAL TRANSIENT SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+($N_0001)    1.6903                   ($N_0002)    3.5324                       
+
+($N_0003)    1.0441                   ($N_0004)    9.2745                       
+
+($N_0005)   10.0000                   ($N_0006)    0.0000                       
+
+($N_0007)    0.0000                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V1        -3.036E-03
+    V_V2         0.000E+00
+
+    TOTAL POWER DISSIPATION   3.04E-02  WATTS
 
 
 
           JOB CONCLUDED
 
-          TOTAL JOB TIME             .03
+          TOTAL JOB TIME             .02
 
