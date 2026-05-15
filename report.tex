@@ -1142,9 +1142,9 @@ The following is the text-based finding of the Metric Polygon, which is used to 
     & C & $\downarrow$ & $\downarrow$ & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
     \midrule
     $V_T \uparrow$
-    & A & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
-    & B & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
-    & C & -- & -- & $\uparrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
+    & A & -- & -- & $\downarrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
+    & B & -- & -- & $\downarrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
+    & C & -- & -- & $\downarrow$ & $\uparrow$ & $\uparrow$ & -- & -- & -- & -- \\
     \midrule
     $\beta \uparrow$
     & A & $\uparrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ & -- & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
@@ -1295,7 +1295,8 @@ Based on the analysis from the simulation above, certain relationships between v
     \draw[directRel, bend right=10] (cc) to (bw);
     
     % Internal Performance relations (Table mapped)
-    \draw[directRel, bend left=20]  (bw) to (av);      
+    % Gain-BW inverse relationship: higher BW means lower gain (gain-BW product)
+    \draw[tradeRel, bend left=20]  (bw) to (av);      
     \draw[directRel, bend right=20] (bw) to (vswing);  
     \draw[directRel, bend right=35] (bw) to (zin);     
 
@@ -1323,11 +1324,12 @@ Based on the analysis from the simulation above, certain relationships between v
         \draw[polyTrade] (p_pd) -- (p_bw);
         \draw[polyTrade] (p_pd) -- (p_io);
 
-        % 2. Direct Relationships (moving together based on table)
+        % 2. Direct/Inverse Relationships
         \draw[polyDirect] (p_vs) -- (p_gain);
         \draw[polyDirect] (p_vs) -- (p_bw);
         \draw[polyDirect] (p_vs) -- (p_io);
-        \draw[polyDirect] (p_gain) -- (p_bw);
+        % Gain-Bandwidth trade-off: fundamental gain-bandwidth product relationship
+        \draw[polyTrade] (p_gain) -- (p_bw);
         \draw[polyDirect] (p_gain) -- (p_io);
         \draw[polyDirect] (p_bw) -- (p_io);
         
@@ -1335,7 +1337,7 @@ Based on the analysis from the simulation above, certain relationships between v
     \end{scope}
 \end{tikzpicture}
 
-Looking at the detailed diagram for Circuit A, the collector current ($I_C$) acts as the primary driver. When an external variable (like $V_{CC}$) forces $I_C$ to increase, it causes Power Dissipation ($P_{total}$) to rise with it (a direct relationship). However, this same increase in $I_C$ suppresses Gain, Bandwidth, Voltage Swing, and Impedance. Because Power increases while those four metrics decrease, Power shares an inverse trade-off (red dashed line) with all of them in the simplified polygon. Conversely, because Gain, Bandwidth, Voltage Swing, and Impedance are all pushed down together by $I_C$, they move in unison, meaning they share direct relationships (blue solid lines) with one another.
+Looking at the detailed diagram for Circuit A, the collector current ($I_C$) acts as the primary driver. When an external variable (like $V_{CC}$) forces $I_C$ to increase, it causes Power Dissipation ($P_{total}$) to rise with it (a direct relationship). However, this same increase in $I_C$ reduces $r_e = V_T/I_E$, which simultaneously suppresses Bandwidth (via $f_H \propto 1/r_e$) while boosting Gain ($A_v \propto 1/r_e$). This reveals the fundamental \textbf{gain--bandwidth product} trade-off: Gain and Bandwidth move in opposite directions. In the simplified polygon, Power Dissipation shares inverse trade-offs (red dashed lines) with Gain, Bandwidth, Voltage Swing, and Impedance. Gain and Bandwidth also share an inverse trade-off (red dashed line) with each other. Voltage Swing and Impedance, driven down together by $I_C$, move in unison with both Gain and Bandwidth respectively but in opposite directions to each other via the gain--bandwidth axis.
 
 
 % ==========================================
@@ -1416,7 +1418,8 @@ Looking at the detailed diagram for Circuit A, the collector current ($I_C$) act
     \draw[directRel, bend left=10]  (cin) to (bw);  
     \draw[directRel, bend right=10] (cc) to (bw);   
 
-    \draw[directRel, bend left=20]  (bw) to (av);      
+    % Gain-BW inverse relationship: higher BW means lower gain (gain-BW product)
+    \draw[tradeRel, bend left=20]  (bw) to (av);      
     \draw[directRel, bend right=20] (bw) to (vswing);  
     \draw[directRel, bend right=35] (bw) to (zin);     
 
@@ -1446,7 +1449,8 @@ Looking at the detailed diagram for Circuit A, the collector current ($I_C$) act
         \draw[polyDirect] (p_vs) -- (p_gain);
         \draw[polyDirect] (p_vs) -- (p_bw);
         \draw[polyDirect] (p_vs) -- (p_io);
-        \draw[polyDirect] (p_gain) -- (p_bw);
+        % Gain-Bandwidth trade-off: fundamental gain-bandwidth product relationship
+        \draw[polyTrade] (p_gain) -- (p_bw);
         \draw[polyDirect] (p_gain) -- (p_io);
         \draw[polyDirect] (p_bw) -- (p_io);
         
@@ -1454,7 +1458,7 @@ Looking at the detailed diagram for Circuit A, the collector current ($I_C$) act
     \end{scope}
 \end{tikzpicture}
 
-In the detailed diagram for Circuit B, the underlying mechanics remain identical to Circuit A despite the addition of split emitter resistors ($R_{E1}$, $R_{E2}$) and $R_1$'s unique inverse effect on Bandwidth. The central pivot is still $I_C$. When $I_C$ increases, Power ($P_{total}$) directly increases while Gain, Bandwidth, Voltage Swing, and Impedance are all dragged down. Therefore, the simplified polygon perfectly mirrors Circuit A's structure: Power Dissipation stands in inverse trade-off (red dashed lines) to the other four metrics, while those four form a cluster connected by direct relationships (blue solid lines) because they fall and rise together under the influence of $I_C$.
+In the detailed diagram for Circuit B, the underlying mechanics are similar to Circuit A, with the key addition of split emitter resistors ($R_{E1}$, $R_{E2}$) and $R_1$'s unique inverse effect on Bandwidth. The central pivot is still $I_C$. The emitter degeneration introduced by $R_{E1}$ is the signature of Circuit B: it deliberately trades off Gain for Bandwidth extension. When Gain decreases (because $R_{E1}$ appears in the denominator of $A_v$), Bandwidth increases proportionally, directly demonstrating the \textbf{gain--bandwidth product} trade-off. Therefore, the simplified polygon has Power Dissipation in inverse trade-off (red dashed lines) with all other metrics, and Gain and Bandwidth themselves are connected by an inverse trade-off (red dashed line). 
 
 % ==========================================
 % DIAGRAM 3: CIRCUIT C
@@ -1531,7 +1535,8 @@ In the detailed diagram for Circuit B, the underlying mechanics remain identical
     \draw[directRel, bend left=10]  (cin) to (bw);  
     \draw[directRel, bend right=10] (cc) to (bw);   
 
-    \draw[directRel, bend left=20]  (bw) to (av);      
+    % Gain-BW inverse relationship: higher BW means lower gain (gain-BW product)
+    \draw[tradeRel, bend left=20]  (bw) to (av);      
     \draw[directRel, bend right=35] (bw) to (zin);     
 
     \matrix [legendBox] at (0, -7.5) {
@@ -1564,8 +1569,9 @@ In the detailed diagram for Circuit B, the underlying mechanics remain identical
         \draw[polyTrade] (p_vs) -- (p_bw);
         \draw[polyTrade] (p_vs) -- (p_io);
 
-        % 4. Gain/BW/Impedance move together
-        \draw[polyDirect] (p_gain) -- (p_bw);
+        % 4. Gain/BW: inverse (gain-bandwidth product). Impedance moves with BW, inversely to Gain.
+        % Gain-Bandwidth trade-off: fundamental gain-bandwidth product relationship
+        \draw[polyTrade] (p_gain) -- (p_bw);
         \draw[polyDirect] (p_gain) -- (p_io);
         \draw[polyDirect] (p_bw) -- (p_io);
         
@@ -1573,7 +1579,7 @@ In the detailed diagram for Circuit B, the underlying mechanics remain identical
     \end{scope}
 \end{tikzpicture}
 
-The detailed diagram for Circuit C reveals a fundamental shift: Voltage Swing ($V_{swing}$) is no longer inversely tied to $I_C$. Instead, as seen by the direct lines, an increase in variables like $V_{CC}$ drives both Power ($P_{total}$) and Voltage Swing ($V_{swing}$) up simultaneously. Because they rise together, the simplified polygon connects Power and Voltage Swing with a direct relationship (blue solid line). Meanwhile, the $I_C$ increase still suppresses Gain, Bandwidth, and Impedance. Consequently, both Power and Voltage Swing share inverse trade-offs (red dashed lines) with the Gain/Bandwidth/Impedance block. Because Gain, Bandwidth, and Impedance continue to be pushed down together by $I_C$, they remain connected to one another by direct relationships (blue solid lines).
+The detailed diagram for Circuit C reveals a fundamental shift: Voltage Swing ($V_{swing}$) is no longer inversely tied to $I_C$. Instead, as seen by the direct lines, an increase in variables like $V_{CC}$ drives both Power ($P_{total}$) and Voltage Swing ($V_{swing}$) up simultaneously. Because they rise together, the simplified polygon connects Power and Voltage Swing with a direct relationship (blue solid line). Meanwhile, the $I_C$ increase still suppresses Gain and Bandwidth, when Gain increases, Bandwidth decreases, and vice versa. Consequently, both Power and Voltage Swing share inverse trade-offs (red dashed lines) with the Gain/Bandwidth/Impedance block. Gain and Bandwidth are connected by an inverse trade-off (red dashed line) with each other. Impedance moves directly with Bandwidth (both are suppressed when $I_C$ rises and $r_e$ falls).
 
 \subsection*{PSpice Simulation}
 \addcontentsline{toc}{subsection}{PSpice Simulation}
@@ -1797,7 +1803,7 @@ Circuit A is properly biased in the active region with $V_{CE} = 5.254$\,V, whic
 Circuit B is also well-biased in the active region with $V_{CE} = 2.959$\,V. The base voltage is $V_B = 5.371$\,V. The emitter degeneration is effectively split ($R_{E1}=R_{E2}=1$\,k$\Omega$), and the collector current is highly similar to Circuit A at $I_C = 2.337$\,mA. Just like Circuit A, the bias resistors were selected to ensure the total supply current matches closely ($I_{total} \approx 2.999$\,mA), meaning its overall power dissipation is practically identical to Circuit A.
 
 \paragraph{Circuit C}
-Circuit C is now properly biased into the active region ($V_{CE} = 2.488$\,V). The collector current is lower ($I_C = 1.037$\,mA), supported by the PNP active load mirror. Because of the sophisticated active load, the bias network could be designed with larger resistors ($R_1 = 8.3$\,k$\Omega$, $R_5 = 9.3$\,k$\Omega$), allowing the circuit to maintain a consistent overall supply current ($I_{total} \approx 3.036$\,mA) that perfectly matches the $\approx$ 30\,mW total power constraint of the other two circuits.
+Circuit C is properly biased into the active region ($V_{CE} = 2.488$\,V). The collector current is lower ($I_C = 1.037$\,mA), supported by the PNP active load mirror. Because of the sophisticated active load, the bias network could be designed with larger resistors ($R_1 = 8.3$\,k$\Omega$, $R_5 = 9.3$\,k$\Omega$), allowing the circuit to maintain a consistent overall supply current ($I_{total} \approx 3.036$\,mA) that perfectly matches the $\approx$ 30\,mW total power constraint of the other two circuits.
 
 \subsubsection*{5.1.2 AC Performance Trade-offs}
 Using the small signal T model, we managed to derive various mathematical equations describing different attributes of the circuit in terms of controllable variables (R, C, etc). A simulation website is developed to analyze the relationship between the derived attributes, and a performance polygon is created based on the analysis. The following is the summary of the entire analysis finding.
@@ -1827,7 +1833,7 @@ Circuit A achieves high gain (32.96\,dB) because $A_v \approx -\frac{\alpha}{r_e
 Circuit B intentionally trades gain for stability and bandwidth using $R_{E1}$, which appears in the denominator of the gain equation. This degeneration is so severe that it actually attenuates the signal ($-0.57$\,dB). Circuit C replaces $R_C$ with an active load mirror, which drives the voltage gain very high (31.82\,dB) even with a smaller $I_C$.
 
 \paragraph{Bandwidth:}
-Because Circuit B heavily degenerates its gain, it achieves a massive bandwidth extension (65.75\,MHz). Circuit A sits in the middle (39.8\,MHz), while Circuit C has the narrowest bandwidth (8.52\,MHz). This clearly demonstrates the fundamental gain--bandwidth product trade-off inherent in amplifier design.
+Because Circuit B heavily degenerates its gain via $R_{E1}$, it achieves a massive bandwidth extension (65.75\,MHz). Circuit A sits in the middle (39.8\,MHz), while Circuit C has the narrowest bandwidth (8.52\,MHz). This clearly demonstrates the fundamental \textbf{gain--bandwidth product} trade-off: Circuit A and C achieve high gain at the expense of bandwidth, while Circuit B sacrifices gain to unlock the widest bandwidth. Gain and bandwidth are therefore in an \textit{inverse} relationship --- they cannot both be maximised simultaneously.
 
 \paragraph{Input Impedance.}
 $Z_{in} = R_{TH} \| (1+\beta)r_e$ for Circuit A.
@@ -1835,7 +1841,7 @@ Because $r_e = V_T / I_E$ and $I_E$ is large, $r_e$ is small, making $Z_{in}$ sm
 Circuit B adds $R_{E1}$ in series which significantly increases its $Z_{in} \approx R_{TH} \| (1+\beta)(r_e + R_{E1})$. This means that Circuit B does not load the signal source nearly as much as Circuit A.
 
 \paragraph{Output Impedance:}
-Both Circuit A and Circuit B have the same moderate output impedance ($Z_{out} \approx R_C = 1\,\text{k}\Omega$). In contrast, Circuit C has a very \textbf{high} intrinsic output impedance because an active load current mirror acts as a high-impedance current source ($Z_{out} \approx r_{o1} \| r_{o2}$). Because of this high output impedance, Circuit C is highly susceptible to loading effects and typically requires a buffer stage (like an emitter follower) to successfully drive low-resistance loads without a massive voltage drop.
+Both Circuit A and Circuit B have the same moderate output impedance ($Z_{out} \approx R_C = 1\,\text{k}\Omega$). In contrast, Circuit C has a very \textbf{high} intrinsic output impedance.
 
 \subsubsection*{5.1.3 Metric Polygon Observations}
 A few key observations from the metric polygon:
@@ -1843,9 +1849,11 @@ A few key observations from the metric polygon:
 \begin{itemize}
     \item \textbf{$I_C$ is the central driver:} Changing almost any external variable will change $I_C$, and $I_C$ in turn changes almost all the other performance metric variables. This single observation explains almost all of the trade-off structure seen in all three circuits.
 
-    \item \textbf{$C_E, C_{in}, C_C$ are free parameters for bandwidth.} Increasing $C_E, C_{in}, C_C$ improves $BW$ in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$.
+    \item \textbf{Gain and Bandwidth are inversely related.} The most critical trade-off in the polygon is the \textbf{gain--bandwidth product} constraint. Gain ($A_v \propto 1/r_e$) and the upper cutoff frequency ($f_H \propto 1/r_e$ via the Miller capacitance $C_{Mi} = C_\mu(1+|A_v|)$) are inversely coupled. When gain increases, the Miller capacitance grows, pulling $f_H$ down and thus shrinking the bandwidth. This is why the edge between Gain and Bandwidth in all three polygons is a red (inverse/trade-off) line, not a blue (direct) line. In practice this means you cannot raise gain and bandwidth simultaneously by changing the same parameters; one must be sacrificed for the other.
 
-    \item \textbf{Emitter Degeneration Extends Bandwidth.} The defining feature of Circuit B is its emitter degeneration resistor ($R_{E1}$). By providing strong negative feedback, it dramatically suppresses voltage gain but proportionally extends the bandwidth, allowing it to achieve the highest operating frequency of all three designs.
+    \item \textbf{$C_E, C_{in}, C_C$ are free parameters for bandwidth.} Increasing $C_E, C_{in}, C_C$ improves $BW$ (by lowering $f_L$) in all three circuits without affecting $A_v$, $Z_{in}$, or $Z_{out}$. These capacitors provide a way to extend bandwidth without paying the gain penalty, but only up to the limit set by $f_H$.
+
+    \item \textbf{Emitter Degeneration Extends Bandwidth.} The defining feature of Circuit B is its emitter degeneration resistor ($R_{E1}$). By providing strong negative feedback, it dramatically suppresses voltage gain but proportionally extends the bandwidth, allowing it to achieve the highest operating frequency of all three designs. This is a direct application of the gain--bandwidth trade-off: sacrificing gain to gain bandwidth.
 \end{itemize}
 
 \subsection*{5.2 Sustainable Design Analysis}
@@ -1900,11 +1908,11 @@ Sustainable design also factors in how many components are used. In this case, C
 This study compared three CE amplifier configurations --- passive resistive (A), emitter degeneration (B), and active loading (C) --- through theoretical derivation, computer-aided metric-polygon simulation, and PSpice verification.
 
 \begin{enumerate}
-    \item From the analysis above, it can be seen that from a purely sustainability standpoint, \textbf{Circuit B is the most sustainable design} because under the same power dissipation, it provides strong voltage gain and bandwidth, maintaining good thermal stability, while only costing one additional resistor compared to Circuit A.
+    \item \textbf{Circuit C has the best performance at a high cost}. It has a great voltage gain with the best thermal stability, but at the cost of two additional transistors, making it most complex and costly. In terms of sustainable design, Circuit C is not the most ideal choice.
 
-    \item \textbf{Circuit C delivers the best performance} in terms of voltage swing, voltage gain, and thermal stability, but at the cost of high transistor count. Hence, it is only suitable for high-performance devices that doesn't factor in circuit complexity and component costs.
+    \item \textbf{Circuit B is the most sustainable design}. It has low but predictable voltage gain because $R_E$ is split into $R_{E1}$ and $R_{E2}$. As such, it has high bandwidth as the trade-off. Furthermore, it has excellent thermal stability as well, which means the AC gain is highly immune to the temperature fluctuations. Even more, Circuit B achieves all of this by just adding an additional resistor compared to Circuit A, making it the most sustainable design.
 
-    \item \textbf{Circuit A is the simplest baseline}. It provides the best gain with the fewest parts, but offers low thermal stability.
+    \item \textbf{Circuit A is the simplest baseline}. It has high voltage gain with low bandwidth, but it is extremely thermally unstable, which will cause the gain to drift significantly as the circuit heats up, making it unsustainable.
 \end{enumerate}
 
 \section*{Appendix}
@@ -1920,6 +1928,9 @@ This study compared three CE amplifier configurations --- passive resistive (A),
 \end{itemize}
 
 \begin{thebibliography}{9}
+
+\bibitem{churchill2020}
+Churchill, K. K. P., Chong, G., Ramiah, H., Ahmad, M. Y., \& Rajendran, J. (2020). Low-voltage capacitive-based step-up DC-DC converters for RF energy harvesting system: A review. \textit{IEEE Access}, \textit{8}, 186393--186407.
 
 \bibitem{stackexchange_power}
 Electrical Engineering Stack Exchange. (n.d.). \textit{Book suggestion - How to calculate the power dissipation of a BJT}. Retrieved May 10, 2026, from \url{https://electronics.stackexchange.com/questions/309254/book-suggestion-how-to-calculate-the-power-dissipation-of-a-bjt}

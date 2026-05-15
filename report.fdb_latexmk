@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1778766439.3835 "c:/Users/Lim Wei Jen/Documents/UM Programming/latex template/EC assignment - New/report.tex" "report.pdf" "report" 1778766451.1164 0
+["pdflatex"] 1778848752.38561 "c:/Users/Lim Wei Jen/Documents/UM Programming/latex template/EC assignment - New/report.tex" "report.pdf" "report" 1778848771.36988 0
   "C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc" 1256929440 2375 baa924870cfb487815765f9094cf3728 ""
   "C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc" 1256929440 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc" 1256929440 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -280,7 +280,7 @@
   "C:/Users/Lim Wei Jen/AppData/Roaming/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "C:/Users/Lim Wei Jen/AppData/Roaming/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/Lim Wei Jen/AppData/Roaming/MiKTeX/tex/latex/titlesec/titlesec.sty" 1736608268 48766 87a17a4ef312a39cd43896e34a679a56 ""
-  "c:/Users/Lim Wei Jen/Documents/UM Programming/latex template/EC assignment - New/report.tex" 1778766424 97110 a80f86bd6bd48037b2a5d755317212f1 ""
+  "c:/Users/Lim Wei Jen/Documents/UM Programming/latex template/EC assignment - New/report.tex" 1778848741 99365 30c93b2a703875cf6a9f4e754055928a ""
   "image.png" 1778166172 105947 df7630e6c867c25e17e042a2693498c4 ""
   "matlab plotting result/Circuit A - AC Sweep.png" 1778754565 60403 5103436949b2e20f5820ca8d4a243324 ""
   "matlab plotting result/Circuit A - Transient.png" 1778754540 43857 3ca45d4dcc1cfb4878abceedd1c240c3 ""
@@ -297,10 +297,10 @@
   "pspice simulation images/image copy 9.png" 1778754237 99582 d364f8acf5d10452a0a9ee54d92138ca ""
   "pspice simulation images/image copy.png" 1778753736 124093 6fc8b8713952d15a7407313b2be98188 ""
   "pspice simulation images/image.png" 1778753749 91197 62164e58319f6db4f12946e8db58f05d ""
-  "report.aux" 1778766450 9901 44c16b18f49b15787e53f210ff07968f "pdflatex"
-  "report.out" 1778766450 4700 185fdb1b1b6549f069991fce378bd855 "pdflatex"
-  "report.tex" 1778766424 97110 a80f86bd6bd48037b2a5d755317212f1 ""
-  "report.toc" 1778766450 2191 2f1484552d056f7d585878d51f5c4000 "pdflatex"
+  "report.aux" 1778848770 9928 42751cf867a4bb3e5bbbb090e8e2bdb1 "pdflatex"
+  "report.out" 1778848770 4700 185fdb1b1b6549f069991fce378bd855 "pdflatex"
+  "report.tex" 1778848741 99365 30c93b2a703875cf6a9f4e754055928a ""
+  "report.toc" 1778848770 2191 683b6aeaf34638c9d33f9fc67ef8b7f3 "pdflatex"
   "simulation website/img/image copy 10.png" 1778665087 469803 6833cbfd7005c4ddb74feb9912ef34c8 ""
   "simulation website/img/image copy 2.png" 1778664970 438019 85c4270d2c569d46337adb77adc568a9 ""
   "simulation website/img/image copy 3.png" 1778664984 540525 63a6909d37f6a5cd851667f1dc41f181 ""

@@ -16,7 +16,7 @@
 \contentsline {section}{Part 4: Results/Discussion}{20}{section*.5}%
 \contentsline {subsection}{Performance Metric Polygons}{20}{section*.6}%
 \contentsline {subsection}{Performance Trade-Off Polygon}{25}{table.1}%
-\contentsline {subsection}{PSpice Simulation}{27}{table.1}%
+\contentsline {subsection}{PSpice Simulation}{28}{table.1}%
 \contentsline {section}{Part 5: Discussion and Conclusion}{39}{figure.caption.35}%
 \contentsline {subsection}{5.1 Discussion}{39}{section*.36}%
 \contentsline {paragraph}{Circuit A: }{39}{table.caption.37}%
